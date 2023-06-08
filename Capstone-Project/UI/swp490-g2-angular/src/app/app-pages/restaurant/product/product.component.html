@@ -1,0 +1,173 @@
+<div class="flex justify-content-center pt-5" *ngIf="product">
+  <form
+    class="surface-card p-4 shadow-2 border-round w-full lg:w-10"
+    (ngSubmit)="onSubmit()"
+    #form="ngForm"
+  >
+    <a
+      pButton
+      pRipple
+      icon="pi pi-arrow-left"
+      label="Back"
+      [routerLink]="productId ? '../..' : '..'"
+    ></a>
+
+    <div class="flex flex-wrap gap-2">
+      <div>
+        <label
+          for="productName"
+          class="block text-900 font-medium my-2 required"
+        >
+          Product Name
+        </label>
+        <input
+          id="productName"
+          type="text"
+          pInputText
+          class="w-full mb-1"
+          name="productName"
+          [(ngModel)]="product.productName"
+          #productName="ngModel"
+          required
+          maxlength="255"
+        />
+        <div
+          class="flex align-items-center gap-1"
+          *ngIf="productName.dirty && productName.errors"
+        >
+          <i class="pi pi-times-circle text-danger"></i>
+          <small class="text-danger"> Enter a valid product name </small>
+        </div>
+      </div>
+      <div>
+        <label for="price" class="block text-900 font-medium my-2 required">
+          Price
+        </label>
+        <p-inputNumber
+          id="price"
+          className="mb-1"
+          name="price"
+          [(ngModel)]="product.price"
+          #price="ngModel"
+          [required]="true"
+          [min]="0"
+          [max]="10000000"
+        ></p-inputNumber>
+        <div
+          class="flex align-items-center gap-1"
+          *ngIf="price.dirty && price.errors"
+        >
+          <i class="pi pi-times-circle text-danger"></i>
+          <small class="text-danger"> Enter a valid product price. Price must be less than or equal to 10 million VND!</small>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <label for="price" class="block text-900 font-medium my-2 required">
+        Status
+      </label>
+      <div class="flex flex-wrap gap-3">
+        <div class="flex align-items-center">
+          <p-radioButton
+            name="productStatus"
+            value="ACTIVE"
+            [(ngModel)]="product.productStatus"
+            inputId="activeProductStatus"
+            [required]="true"
+          ></p-radioButton>
+          <label for="activeProductStatus" class="ml-2"> Available </label>
+        </div>
+
+        <div class="flex align-items-center">
+          <p-radioButton
+            name="productStatus"
+            value="OUT_OF_STOCK"
+            [(ngModel)]="product.productStatus"
+            inputId="outOfStockProductStatus"
+          ></p-radioButton>
+          <label for="outOfStockProductStatus" class="ml-2">
+            Out of stock
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <label for="description" class="block text-900 font-medium my-2 required">
+      Description
+    </label>
+    <textarea
+      id="description"
+      pInputTextarea
+      class="w-full mb-1"
+      name="description"
+      [(ngModel)]="product.description"
+      #description="ngModel"
+      required
+    ></textarea>
+    <div
+      class="flex align-items-center gap-1"
+      *ngIf="description.dirty && description.errors"
+    >
+      <i class="pi pi-times-circle text-danger"></i>
+      <small class="text-danger"> Enter a valid product description </small>
+    </div>
+
+    <label class="block text-900 font-medium my-2"> Existed Categories </label>
+
+    <div class="card flex align-items-center gap-2 flex-wrap">
+      <p-chip
+        *ngFor="let category of allCategories"
+        [label]="category.productCategoryName!"
+        pDraggable
+        (onDragStart)="dragStart(category)"
+        (onDragEnd)="dragEnd()"
+      ></p-chip>
+    </div>
+
+    <label for="description" class="block text-900 font-medium my-2 required">
+      Categories
+    </label>
+    <p>
+      <small>*Note: Drag and drop the above existed categories down here</small>
+    </p>
+    <div class="p-fluid mb-1" pDroppable (onDrop)="drop()">
+      <p-chips
+        [ngModel]="productCategoryNames"
+        (ngModelChange)="changeProductCategory($event)"
+        [ngModelOptions]="{ standalone: true }"
+        [required]="true"
+      >
+      </p-chips>
+    </div>
+
+    <ng-container *ngIf="productId">
+      <label class="block text-900 font-medium my-2"> Images </label>
+      <div class="flex flex-wrap gap-5">
+        <app-image-attachment
+          *ngFor="let image of product.images"
+          [url]="image.filePath"
+          [isRound]="false"
+          width="auto"
+          height="10rem"
+          [deletable]="true"
+          (deleteImageHandler)="deleteImage(image)"
+        ></app-image-attachment>
+        <app-image-attachment
+          [editable]="true"
+          [uploadUrl]="'product/add-image/' + productId"
+          method="PUT"
+          (selectedImageHandler)="addImage($event)"
+        ></app-image-attachment>
+      </div>
+    </ng-container>
+
+    <button
+      pButton
+      pRipple
+      label="Submit"
+      class="w-full mt-3"
+      [disabled]="submitButtonDisabled"
+    ></button>
+  </form>
+</div>

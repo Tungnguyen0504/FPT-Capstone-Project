@@ -1,0 +1,222 @@
+<div
+  class="surface-overlay shadow-2 flex align-items-center justify-content-between relative xl:static"
+  style="min-height: 42px; padding: 1rem"
+>
+  <p-button
+    (click)="sidebarVisible = true"
+    class="p-button-rounded p-button-secondary mr-3"
+    pTooltip="Sidebar"
+    tooltipPosition="top"
+    icon="pi pi-list"
+  ></p-button>
+  <img src="../../favicon.ico" height="40" class="mr-0 xl:mr-2" routerLink="" />
+
+  <a
+    pRipple
+    class="cursor-pointer block xl:hidden text-700"
+    pStyleClass="@next"
+    enterClass="hidden"
+    leaveToClass="hidden"
+    [hideOnOutsideClick]="true"
+  >
+    <i class="pi pi-bars text-4xl"></i>
+  </a>
+  <div
+    class="align-items-center flex-grow-1 justify-content-between hidden xl:flex absolute xl:static w-full surface-overlay left-0 top-100 z-1 shadow-2 xl:shadow-none"
+  >
+    <ul
+      class="list-none p-0 m-0 flex xl:align-items-center select-none flex-column xl:flex-row"
+    >
+      <ng-container>
+        <li class="h-full">
+          <a
+            pRipple
+            class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 hover:border-500 transition-colors transition-duration-150 py-3 xl:py-0 px-3"
+            routerLink=""
+            routerLinkActive="xl:border-bottom-2 border-blue-500"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span class="pi pi-home mr-3"></span>
+            <span class="font-medium">Home</span>
+          </a>
+        </li>
+        <li class="h-full">
+          <a
+            pRipple
+            class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 hover:border-500 transition-colors transition-duration-150 py-3 xl:py-0 px-3"
+            routerLink="/restaurants"
+            routerLinkActive="xl:border-bottom-2 border-blue-500"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span class="pi pi-map mr-3"></span>
+            <span class="font-medium">Restaurants</span>
+          </a>
+        </li>
+        <!-- <li class="h-full">
+          <a
+            pRipple
+            class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 hover:border-500 transition-colors transition-duration-150 py-3 xl:py-0 px-3"
+            routerLink="feed-page"
+            routerLinkActive="xl:border-bottom-2 border-blue-500"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span class="pi pi-bookmark mr-3"></span>
+            <span class="font-medium">Feed</span>
+          </a>
+        </li> -->
+        <li class="h-full" *ngIf="userExistedAdmin()">
+          <a
+            pRipple
+            class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 hover:border-500 transition-colors transition-duration-150 py-3 xl:py-0 px-3"
+            routerLink="admin-pages"
+            routerLinkActive="xl:border-bottom-2 border-blue-500"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span class="pi pi-shield mr-3"></span>
+            <span class="font-medium">Admin Management</span>
+          </a>
+        </li>
+        <li class="h-full" *ngIf="userExistedSeller()">
+          <a
+            pRipple
+            class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 hover:border-500 transition-colors transition-duration-150 py-3 xl:py-0 px-3"
+            routerLink="seller-pages"
+            routerLinkActive="xl:border-bottom-2 border-blue-500"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span class="pi pi-shield mr-3"></span>
+            <span class="font-medium">Seller's Restaurant Owner</span>
+          </a>
+        </li>
+        <li class="h-full" *ngIf="userExistedSeller()">
+          <a
+            pRipple
+            class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 hover:border-500 transition-colors transition-duration-150 py-3 xl:py-0 px-3"
+            routerLink="order-management"
+            routerLinkActive="xl:border-bottom-2 border-blue-500"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span class="pi pi-inbox mr-3"></span>
+            <span class="font-medium">Seller's Order Management</span>
+          </a>
+        </li>
+        <li class="h-full" *ngIf="user?.buyer">
+          <a
+            pRipple
+            class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 hover:border-500 transition-colors transition-duration-150 py-3 xl:py-0 px-3"
+            routerLink="buyer-orders"
+            routerLinkActive="xl:border-bottom-2 border-blue-500"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span class="pi pi-inbox mr-3"></span>
+            <span class="font-medium"> My Orders </span>
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+    <ul class="flex list-none p-0 m-0 flex-column xl:flex-row">
+      <!-- <li class="h-full">
+        <a pRipple
+          class="cursor-pointer h-full inline-flex align-items-center text-600 py-3 xl:py-0 px-3 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 transition-colors transition-duration-150">
+          <span class="pi pi-book mr-3 xl:mr-0"></span>
+          <span class="font-medium inline xl:hidden">Documentation</span>
+        </a>
+      </li>
+      <li class="h-full">
+        <a pRipple
+          class="cursor-pointer h-full inline-flex align-items-center text-600 py-3 xl:py-0 px-3 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 transition-colors transition-duration-150">
+          <span class="pi pi-inbox mr-3 xl:mr-0"></span>
+          <span class="font-medium inline xl:hidden">Inbox</span>
+        </a>
+      </li> -->
+      <li class="h-full">
+        <app-notifications></app-notifications>
+      </li>
+      <li class="h-full">
+        <app-cart-pages></app-cart-pages>
+      </li>
+      <li class="h-full relative">
+        <a
+          pRipple
+          class="cursor-pointer h-full inline-flex align-items-center text-600 py-3 xl:py-0 px-3 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 transition-colors transition-duration-150"
+          pStyleClass="@next"
+          enterClass="hidden"
+          enterActiveClass="scalein"
+          leaveToClass="hidden"
+          leaveActiveClass="fadeout"
+          [hideOnOutsideClick]="true"
+        >
+          <span class="pi pi-user mr-3"></span>
+          <span class="font-medium inline"> {{ getUserDisplay() }}</span>
+          <i class="pi pi-angle-down"></i>
+        </a>
+        <div
+          class="hidden static xl:absolute w-full surface-overlay left-0 top-100 z-1 shadow-none xl:shadow-2 origin-top border-round pl-3 xl:pl-0"
+        >
+          <ul class="list-none p-0 m-0">
+            <ng-container *ngIf="!userExisted()">
+              <li>
+                <a
+                  pRipple
+                  class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 border-transparent hover:border-500 transition-colors transition-duration-150 p-3"
+                  routerLink="auth/login"
+                >
+                  <span class="pi pi-sign-in mr-3"></span>
+                  <span class="font-medium">Sign In</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  pRipple
+                  class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 border-transparent hover:border-500 transition-colors transition-duration-150 p-3"
+                  routerLink="auth/register"
+                >
+                  <span class="pi pi-id-card mr-3"></span>
+                  <span class="font-medium">Register</span>
+                </a>
+              </li>
+            </ng-container>
+            <ng-container *ngIf="userExisted()">
+              <li>
+                <a
+                  pRipple
+                  class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 border-transparent hover:border-500 transition-colors transition-duration-150 p-3"
+                  routerLink="account-information"
+                  routerLinkActive="border-blue-500"
+                >
+                  <span class="pi pi-cog mr-3"></span>
+                  <span class="font-medium">Setting</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  pRipple
+                  class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 border-transparent hover:border-500 transition-colors transition-duration-150 p-3"
+                  routerLink="change-password"
+                  routerLinkActive="border-blue-500"
+                >
+                  <span class="pi pi-unlock mr-3"></span>
+                  <span class="font-medium">Change password</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  pRipple
+                  class="cursor-pointer h-full inline-flex align-items-center text-600 border-left-2 border-transparent hover:border-500 transition-colors transition-duration-150 p-3"
+                  (click)="logOut()"
+                >
+                  <span class="pi pi-sign-out mr-3"></span>
+                  <span class="font-medium">Sign out</span>
+                </a>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<p-sidebar [(visible)]="sidebarVisible" styleClass="w-18rem">
+  <app-side-bars [user]="user"></app-side-bars>
+</p-sidebar>

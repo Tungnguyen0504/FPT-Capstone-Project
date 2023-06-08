@@ -1,0 +1,113 @@
+<div class="grid m-0 p-fluid">
+  <div class="col-12 md:col-4">
+    <label for="city" class="block text-900 font-medium my-2 required"
+      >Province</label
+    >
+    <p-dropdown
+      inputId="city"
+      [options]="cities"
+      ngModel
+      name="city"
+      optionLabel="cityName"
+      [filter]="true"
+      filterBy="cityName"
+      placeholder="Select a province"
+      (onChange)="changeProvince()"
+      [required]="true"
+    >
+      <ng-template pTemplate="selectedItem">
+        <div>{{ form.controls["city"].value.cityName }}</div>
+      </ng-template>
+      <ng-template let-city pTemplate="item">
+        <div>{{ city.cityName }}</div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+
+  <div class="col-12 md:col-4">
+    <label for="district" class="block text-900 font-medium my-2 required"
+      >District</label
+    >
+    <p-dropdown
+      inputId="district"
+      [options]="districts"
+      ngModel
+      name="district"
+      [filter]="true"
+      filterBy="districtName"
+      placeholder="Select a district"
+      (onChange)="changeDistrict()"
+      [required]="true"
+    >
+      <ng-template pTemplate="selectedItem">
+        <div>{{ form.controls["district"].value.districtName }}</div>
+      </ng-template>
+      <ng-template let-district pTemplate="item">
+        <div>{{ district.districtName }}</div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+
+  <div class="col-12 md:col-4">
+    <label for="ward" class="block text-900 font-medium my-2 required"
+      >Ward</label
+    >
+    <p-dropdown
+      inputId="ward"
+      [options]="wards"
+      ngModel
+      name="ward"
+      optionLabel="wardName"
+      [filter]="true"
+      filterBy="wardName"
+      placeholder="Select a ward"
+      (onChange)="changeWard()"
+      [required]="true"
+    >
+      <ng-template pTemplate="selectedItem">
+        <div>{{ form.controls["ward"].value.wardName }}</div>
+      </ng-template>
+      <ng-template let-ward pTemplate="item">
+        <div>{{ ward.wardName }}</div>
+      </ng-template>
+    </p-dropdown>
+  </div>
+
+  <div
+    class="col-12"
+    *ngIf="
+      address?.specificAddress ||
+      (form.controls['city']?.value &&
+        form.controls['district']?.value &&
+        form.controls['ward']?.value)
+    "
+  >
+    <label
+      for="specificAddress"
+      class="block text-900 font-medium mb-2 required"
+    >
+      Specific Address
+    </label>
+    <input
+      id="specificAddress"
+      type="text"
+      pInputText
+      class="w-full mb-1"
+      name="specificAddress"
+      placeholder="House Number,..."
+      ngModel
+      required
+      maxlength="255"
+    />
+    <div
+        class="flex align-items-center gap-1"
+        *ngIf="
+          form.controls['specificAddress']?.dirty &&
+          form.controls['specificAddress']?.errors
+        "
+      >
+        <i class="pi pi-times-circle text-danger"></i>
+        <small class="text-danger"> Specific address can't be empty!</small>
+      </div>
+  </div>
+</div>

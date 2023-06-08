@@ -1,0 +1,195 @@
+<p-dialog
+  [header]="(editable ? 'Update ' : '') + 'Restaurant Information'"
+  [(visible)]="displayModal"
+  styleClass="w-full xl:w-5"
+  [closable]="true"
+  [modal]="true"
+  (onHide)="onDialogHide()"
+>
+  <div class="flex justify-content-center align-items-center">
+    <form
+      #form="ngForm"
+      class="row-gap-0 p-2 lg:p-4 shadow-2 zborder-round w-full"
+      (ngSubmit)="submit()"
+    >
+      <div class="col" *ngIf="showError && form.invalid">
+        <p class="text-red-500">Please fill out all required fields</p>
+      </div>
+      <div class="col">
+        <label for="restaurantName" class="block text-900 font-medium required">
+          Restaurant Name
+        </label>
+        <input
+          id="restaurantName"
+          name="restaurantName"
+          [(ngModel)]="restaurant.restaurantName"
+          type="text"
+          pInputText
+          class="w-full"
+          placeholder="Enter name for restaurant ..."
+          maxlength="255"
+          required
+        />
+      </div>
+
+      <div class="col">
+        <div class="flex align-items-center gap-2 flex-wrap">
+          <label for="categories" class="block text-900 font-medium required">
+            Categories
+          </label>
+          <p-multiSelect
+            inputId="categories"
+            [options]="categories"
+            [(ngModel)]="restaurant.restaurantCategories"
+            name="restaurantCategories"
+            defaultLabel="Select a category"
+            optionLabel="restaurantCategoryName"
+            styleClass="w-20rem"
+          ></p-multiSelect>
+        </div>
+      </div>
+
+      <div class="col">
+        <label for="description" class="block text-900 font-medium required">
+          Description
+        </label>
+        <textarea
+          class="w-full"
+          name="description"
+          [(ngModel)]="restaurant.description"
+          rows="5"
+          pInputTextarea
+          required
+          placeholder="Enter description ..."
+          >{{ restaurant.description }}</textarea
+        >
+      </div>
+
+      <div class="grid m-0">
+        <div class="col">
+          <label for="phoneNumber" class="block text-900 font-medium required">
+            Phone Number
+          </label>
+          <input
+            id="phoneNumber"
+            name="phoneNumber"
+            [(ngModel)]="restaurant.phoneNumber"
+            type="text"
+            pInputText
+            class="w-full"
+            ngModel
+            required
+          />
+        </div>
+      </div>
+
+      <div
+        class="flex align-items-center gap-1"
+        *ngIf="
+          form.controls['phoneNumber']?.dirty &&
+          form.controls['phoneNumber']?.errors
+        "
+      >
+        <i class="pi pi-times-circle text-danger"></i>
+        <small class="text-danger"> Enter a valid phone number! </small>
+      </div>
+
+      <app-address-fields [address]="restaurant.address"></app-address-fields>
+
+      <p-divider></p-divider>
+
+      <ng-container *ngIf="restaurant.bankDetail">
+        <h1>Bank Details</h1>
+        <div class="col">
+          <label
+            for="bankDetail_accountNumber"
+            class="block text-900 font-medium"
+          >
+            Account Number
+          </label>
+          <input
+            id="bankDetail_accountNumber"
+            name="bankDetail_accountNumber"
+            [(ngModel)]="restaurant.bankDetail!.accountNumber"
+            type="text"
+            pInputText
+            class="w-full"
+          />
+        </div>
+        <div
+          class="flex align-items-center gap-1"
+          *ngIf="
+            form.controls['bankDetail_accountNumber']?.dirty &&
+            form.controls['bankDetail_accountNumber']?.errors
+          "
+        >
+          <i class="pi pi-times-circle text-danger"></i>
+          <small class="text-danger"> Enter a valid account number! </small>
+        </div>
+
+        <div class="col">
+          <label
+            for="bankDetail_accountName"
+            class="block text-900 font-medium"
+          >
+            Account Name
+          </label>
+          <input
+            id="bankDetail_accountName"
+            name="bankDetail_accountName"
+            [(ngModel)]="restaurant.bankDetail!.accountName"
+            type="text"
+            pInputText
+            class="w-full uppercase"
+            maxlength="255"
+          />
+        </div>
+
+        <div class="col">
+          <label for="bankDetail_acqId" class="block text-900 font-medium">
+            Bank Name
+          </label>
+          <p-dropdown
+            [options]="banksData"
+            [(ngModel)]="selectedBank"
+            name="bankDetail_acqId"
+            optionLabel="name"
+            [filter]="true"
+            filterBy="shortName,name"
+            tooltipPosition="top"
+          >
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="selectedBank">
+                {{ selectedBank.shortName }} - {{ selectedBank.name }}
+              </div>
+            </ng-template>
+            <ng-template let-bank pTemplate="item">
+              <div>{{ bank.shortName }} - {{ bank.name }}</div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+      </ng-container>
+
+      <div class="col text-center" *ngIf="editable">
+        <button
+          pButton
+          pRipple
+          label="Save"
+          type="submit"
+          [disabled]="submitButtonDisabled"
+        ></button>
+      </div>
+    </form>
+  </div>
+</p-dialog>
+
+<button
+  pTooltip="Basic information"
+  tooltipPosition="left"
+  pButton
+  pRipple
+  icon="pi pi-list"
+  class="p-button-rounded p-button-help"
+  type="button"
+  (click)="showDialog()"
+></button>

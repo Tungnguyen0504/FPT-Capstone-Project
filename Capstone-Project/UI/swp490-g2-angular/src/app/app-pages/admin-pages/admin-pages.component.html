@@ -1,0 +1,134 @@
+<ng-container *ngIf="isParentPage()">
+  <div
+    class="surface-section h-min-30rem bg-no-repeat bg-cover bg-center align-items-center"
+    style="
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+        url(assets/images/admin-blur.jpg);
+    "
+  >
+    <div class="p-7 lg:p-7 text-center">
+      <span class="block text-5xl text-white mb-4">Administrator Page</span>
+      <span class="block text-4xl font-medium text-white mb-6"
+        >Administrator for System Management</span
+      >
+      <div class="grid">
+        <div class="col-12">
+          <div
+            class="surface-card shadow-2 border-round flex p-3 flex-column md:flex-row"
+          >
+            <div
+              class="border-bottom-1 md:border-right-1 md:border-bottom-none surface-border flex-auto p-3"
+            >
+              <div class="flex align-items-center justify-content-center mb-3">
+                <i class="pi pi-shopping-cart text-blue-500 text-xl mr-2"></i>
+                <span class="text-500 font-medium">Orders</span>
+              </div>
+              <span class="block text-900 font-medium mb-4 text-xl">
+                {{ summary.totalOrders }}
+              </span>
+            </div>
+            <div
+              class="border-bottom-1 md:border-right-1 md:border-bottom-none surface-border flex-auto p-3"
+            >
+              <div class="flex align-items-center justify-content-center mb-3">
+                <i class="pi pi-users text-orange-500 text-xl mr-2"></i>
+                <span class="text-500 font-medium">Users</span>
+              </div>
+              <span class="block text-900 font-medium mb-4 text-xl">
+                {{ summary.totalUsers }}</span
+              >
+            </div>
+            <div
+              class="border-bottom-1 md:border-right-1 md:border-bottom-none surface-border flex-auto p-3"
+            >
+              <div class="flex align-items-center justify-content-center mb-3">
+                <i class="pi pi-home text-cyan-500 text-xl mr-2"></i>
+                <span class="text-500 font-medium">Restaurants</span>
+              </div>
+              <span class="block text-900 font-medium mb-4 text-xl">
+                {{ summary.totalRestaurants }}
+              </span>
+            </div>
+            <div class="flex-auto p-3">
+              <div class="flex align-items-center justify-content-center mb-3">
+                <i
+                  class="pi pi-angle-double-up text-purple-500 text-xl mr-2"
+                ></i>
+                <span class="text-500 font-medium">Res. Opening Request</span>
+              </div>
+              <span class="block text-900 font-medium mb-4 text-xl">
+                {{ summary.totalRestaurantOpeningRequests }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="surface-ground">
+    <div class="grid m-0">
+      <div
+        class="col-12 lg:col-4 p-3"
+        *ngFor="let buttonContent of buttonContents"
+      >
+        <a [routerLink]="buttonContent.routerLink">
+          <div
+            class="p-3 border-round shadow-2 flex align-items-center surface-card"
+          >
+            <div
+              style="min-width: 48px; height: 48px; border-radius: 10px"
+              class="inline-flex align-items-center justify-content-center mr-3"
+              [ngClass]="'bg-' + buttonContent.color + '-100'"
+            >
+              <i
+                class="text-3xl pi"
+                [ngClass]="
+                  buttonContent.iconClass +
+                  ' text-' +
+                  buttonContent.color +
+                  '-600'
+                "
+              ></i>
+            </div>
+            <div>
+              <span class="text-900 text-xl font-medium mb-2">
+                {{ buttonContent.title }}</span
+              >
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<div class="grid m-0">
+  <div
+    *ngIf="!isParentPage()"
+    class="surface-section z-1 border-right-1 surface-border select-none col xl:col-2 xl:h-min-screen"
+  >
+    <div class="flex flex-column sticky top-0">
+      <div class="overflow-y-auto">
+        <ul class="list-none p-2 m-0 surface-border">
+          <li>
+            <div class="p-3 text-500 font-medium">ADMIN MANAGEMENT</div>
+          </li>
+          <li *ngFor="let buttonContent of buttonContents">
+            <a
+              pRipple
+              class="flex align-items-center cursor-pointer p-3 text-700 hover:surface-100 border-round transition-colors transition-duration-150"
+              [routerLink]="buttonContent.routerLink"
+            >
+              <i [class]="'pi ' + buttonContent.iconClass + ' mr-2'"></i>
+              <span class="font-medium"> {{ buttonContent.title }} </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 xl:col-10">
+    <router-outlet></router-outlet>
+  </div>
+</div>

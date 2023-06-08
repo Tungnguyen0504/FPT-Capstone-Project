@@ -1,0 +1,57 @@
+img#mainImage {
+  object-fit: cover;
+}
+
+.round-border {
+  border-radius: 50%;
+}
+
+div.hover:hover {
+  img {
+    /* Add the blur effect */
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+  }
+
+  i {
+    opacity: 1;
+  }
+}
+
+div.hover {
+  i {
+    opacity: 0;
+  }
+}
+
+.round-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid var(--surface-0);
+  border-radius: 50%;
+  color: var(--surface-0);
+  text-align: center;
+  text-decoration: none;
+  background: var(--surface-500);
+  box-shadow: 0 0 3px gray;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+i.pi-paperclip {
+  font-size: 1.5em;
+}
+
+.round-button.hover:hover {
+  background: var(--primary-500);
+}
+
+img.selected {
+  border: 5px solid var(--green-500);
+}
+
+.transform-middle {
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}

@@ -1,0 +1,36 @@
+<form
+  #destinationAddressForm="ngForm"
+  class="flex flex-wrap align-items-center gap-2"
+>
+  <strong> Your shipping address: </strong>
+  <span> {{ fullDestinationAddress }} </span>
+  <button
+    type="button"
+    label="Update Shipping Address"
+    pButton
+    (click)="destinationAddressOp.toggle($event)"
+  ></button>
+  <p-overlayPanel #destinationAddressOp>
+    <div class="flex flex-column align-items-center">
+      <app-address-fields
+        *ngIf="destinationAddressLoaded"
+        [address]="destinationAddress"
+      ></app-address-fields>
+      <div class="flex flex-wrap gap-2">
+        <button
+          type="button"
+          label="Reset"
+          pButton
+          class="p-button-secondary"
+          (click)="resetShippingAddress()"
+        ></button>
+        <button
+          type="button"
+          label="Update"
+          pButton
+          (click)="updateShippingAddress(destinationAddressForm.value)"
+        ></button>
+      </div>
+    </div>
+  </p-overlayPanel>
+</form>

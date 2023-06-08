@@ -1,0 +1,177 @@
+<a
+  label="Display"
+  icon="pi pi-arrow-left"
+  pStyleClass="#slideover-cart-ext"
+  enterClass="hidden"
+  enterActiveClass="fadeinright"
+  leaveToClass="hidden"
+  leaveActiveClass="fadeoutright"
+  [hideOnOutsideClick]="true"
+  class="cursor-pointer relative h-full inline-flex align-items-center text-600 py-3 xl:py-0 px-3 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 transition-colors transition-duration-150"
+  (click)="refresh()"
+  *ngIf="isSideBar"
+>
+  <span
+    class="pi pi-cart-plus mr-3 xl:mr-0"
+    pBadge
+    [value]="(order?.orderProductDetails?.length || 0) + ''"
+  ></span>
+  <span class="font-medium inline xl:hidden">Cart</span>
+</a>
+
+<div
+  #sideBar
+  id="slideover-cart-ext"
+  class="hidden surface-overlay absolute right-0 shadow-2 h-full w-full xl:w-max z-1"
+  [style.top.px]="verticalOffset"
+  [hidden]="!hasOrder"
+  *ngIf="isSideBar"
+>
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</div>
+
+<div *ngIf="!isSideBar">
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</div>
+
+<ng-template #content>
+  <div class="flex flex-column h-full">
+    <div
+      class="surface-overlay p-4 flex align-items-center justify-content-between"
+    >
+      <span class="text-900 text-xl font-medium">
+        Your Cart
+        <strong *ngIf="restaurant"> [{{ restaurant.restaurantName }}] </strong>
+      </span>
+      <button
+        *ngIf="isSideBar"
+        pButton
+        pRipple
+        icon="pi pi-times"
+        class="p-button-text p-button-plain p-button-rounded"
+        pStyleClass="#slideover-cart-ext"
+        leaveToClass="hidden"
+        leaveActiveClass="fadeoutright"
+      ></button>
+    </div>
+    <div class="flex flex-auto overflow-y-auto">
+      <div class="w-full p-4 flex flex-column">
+        <div
+          *ngFor="let detail of order?.orderProductDetails"
+          class="flex align-items-start md:align-items-center border-top-1 surface-border pt-4 mb-4"
+        >
+          <ng-container *ngIf="getProduct(detail)">
+            <app-image-attachment
+              *ngIf="getProduct(detail)?.images?.length"
+              [url]="getProduct(detail)!.images![0].filePath!"
+              width="7rem"
+              height="7rem"
+              [isRound]="false"
+            ></app-image-attachment>
+
+            <div
+              *ngIf="!getProduct(detail)?.images?.length"
+              style="width: 7rem; height: 7rem"
+              class="border-3 border-dashed border-round"
+            ></div>
+          </ng-container>
+
+          <div class="pl-3 flex-auto">
+            <div class="flex align-items-center justify-content-between mb-2">
+              <span class="text-primary font-medium">
+                {{ getProduct(detail)?.productName }}
+              </span>
+              <a
+                class="cursor-pointer text-pink-500 hover:text-pink-700 transition-colors transition-duration-300"
+                (click)="remove(detail)"
+              >
+                <i class="pi pi-trash"> </i>
+              </a>
+            </div>
+            <!-- <span class="text-500">Medium</span> -->
+            <div
+              class="flex align-items-center justify-content-between mt-2 gap-5"
+            >
+              <div class="mt-4">
+                <p-accordion>
+                  <p-accordionTab header="Note">
+                    <span class="p-float-label">
+                      <textarea
+                        id="float-input"
+                        [(ngModel)]="detail.note"
+                        rows="5"
+                        cols="30"
+                        pInputTextarea
+                      ></textarea>
+                      <label for="float-input">Summary</label>
+                    </span>
+                  </p-accordionTab>
+                </p-accordion>
+              </div>
+
+              <p-inputNumber
+                [showButtons]="true"
+                buttonLayout="horizontal"
+                spinnerMode="horizontal"
+                [min]="1"
+                [max]="999"
+                inputStyleClass="w-3rem text-center py-2 border-transparent"
+                [ngModel]="detail.quantity"
+                (ngModelChange)="calculateTotal($event, detail)"
+                class="border-1 surface-border border-round"
+                decrementButtonClass="p-button-text py-1 px-2"
+                incrementButtonClass="p-button-text py-1 px-1"
+                incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus"
+              >
+              </p-inputNumber>
+              <span class="text-900 font-medium">
+                {{ detail.quantity! * detail.price! | currency : "VND" }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="border-top-1 border-bottom-1 surface-border mt-4 py-4">
+          <ul class="list-none m-0 p-0">
+            <li class="flex justify-content-between mb-3">
+              <span class="text-600">Subtotal</span>
+              <span class="text-900 font-medium">$20.00</span>
+            </li>
+            <li class="flex justify-content-between mb-3">
+              <span class="text-600">Shipping</span>
+              <span class="text-900 font-medium">$5.00</span>
+            </li>
+            <li class="flex justify-content-between">
+              <span class="text-600">Total</span>
+              <span class="text-900 font-medium">$25.00</span>
+            </li>
+          </ul>
+        </div> -->
+        <div class="mt-auto">
+          <div
+            class="flex align-items-center justify-content-between text-xl text-900"
+          >
+            <span>Grand Total</span>
+            <span> {{ totalPrice | currency : "VND" }} </span>
+          </div>
+          <div class="flex flex-column mt-4 gap-2">
+            <button
+              pButton
+              pRipple
+              label="Empty Cart"
+              class="w-full p-button-danger"
+              (click)="emptyCart()"
+            ></button>
+            <button
+              pButton
+              pRipple
+              label="Place Order"
+              class="w-full"
+              (click)="addOrder()"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

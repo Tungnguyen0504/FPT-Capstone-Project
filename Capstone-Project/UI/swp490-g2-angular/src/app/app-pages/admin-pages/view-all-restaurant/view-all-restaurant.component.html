@@ -1,0 +1,215 @@
+<div class="flex flex-column gap-5 p-2 lg:p-5 surface-section">
+  <div>
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Back"
+      icon="pi pi-arrow-left"
+      class="p-button-rounded p-button-info"
+      routerLink=".."
+    ></button>
+  </div>
+  <div
+    class="flex align-items-start bg-gray-200 flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <div class="p-5">
+        <span class="text-900 font-medium text-3xl"> View Restaurant List</span>
+        <div class="flex align-items-center flex-wrap text-sm">
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500">TOTAL RESTAURANT</span>
+            <div class="text-700 mt-2">{{ restaurants.length }}</div>
+          </div>
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500">ACTIVE</span>
+            <div class="text-700 mt-2">
+              {{ getTotalRestaurantsByStatus(true) }}
+            </div>
+          </div>
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500">INACTIVE</span>
+            <div class="text-700 mt-2">
+              {{ getTotalRestaurantsByStatus(false) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p-table
+    #dt
+    [value]="restaurants"
+    dataKey="id"
+    [rowHover]="true"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5, 10, 25, 50]"
+    [paginator]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [filterDelay]="0"
+    [responsive]="true"
+  >
+    <ng-template pTemplate="caption">
+      <div class="table-header flex align-items-center justify-content-between">
+        <p-button
+          label="Add new restaurant"
+          [routerLink]="'add-restaurant-info'"
+        ></p-button>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <div class="flex justify-content-between align-items-center">#</div>
+        </th>
+        <th pSortableColumn="restaurantName">
+          <div class="flex justify-content-between align-items-center">
+            Restaurant Name
+            <p-sortIcon field="restaurantName"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="createdAt">
+          <div class="flex justify-content-between align-items-center">
+            Created Date
+            <p-sortIcon field="createdAt"></p-sortIcon>
+          </div>
+        </th>
+        <th>
+          <div class="flex justify-content-between align-items-center">
+            Phone Number
+          </div>
+        </th>
+        <th pSortableColumn="active">
+          <div class="flex justify-content-between align-items-center">
+            Status
+            <p-sortIcon field="active"></p-sortIcon>
+          </div>
+        </th>
+        <th>
+          <div class="flex justify-content-between align-items-center">
+            Action
+          </div>
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-resOpening let-rowIndex="rowIndex">
+      <tr class="p-selectable-row">
+        <td>
+          <span class="p-column-title">#</span>
+          {{ rowIndex + 1 }}
+        </td>
+        <td>
+          <span class="p-column-title">Restaurant Name</span>
+          {{ resOpening.restaurantName }}
+        </td>
+        <td>
+          <span class="p-column-title">Created Date</span>
+          {{ resOpening.createdAt * 1000 | date : "dd/MM/yyyy" }}
+        </td>
+        <td>
+          <span class="p-column-title">Phone Number</span>
+          {{ resOpening.phoneNumber }}
+        </td>
+        <td>
+          <span class="p-column-title">Status</span>
+          <p-tag
+            [value]="resOpening.active ? 'Active' : 'Inactive'"
+            [severity]="resOpening.active ? 'success' : 'danger'"
+          >
+          </p-tag>
+        </td>
+        <td style="text-align: center" class="flex flex-wrap gap-2">
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-eye"
+            class="p-button-rounded p-button-large"
+            [routerLink]="'view-restaurant-details/' + resOpening.id"
+          ></button>
+          <button
+            pButton
+            pRipple
+            class="p-button-rounded ml-2"
+            [ngClass]="
+              !resOpening.active ? 'p-button-primary' : 'p-button-danger'
+            "
+            [icon]="!resOpening.active ? 'pi pi-check' : 'pi pi-times'"
+            (click)="toggleRestaurantStatus(resOpening, !resOpening.active)"
+            [pTooltip]="resOpening.active ? 'Deactivate' : 'Activate'"
+            tooltipPosition="right"
+          ></button>
+          <button
+            *ngIf="!resOpening.active" 
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-trash"
+            class="btn-action p-button-rounded p-button-danger ml-2"
+            (click)="toggleDeleteRestaurantInactive(resOpening.id)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="9">No Data Found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  header="Header"
+  [(visible)]="deactivateDialogVisible"
+  [modal]="true"
+  [style]="{ 'min-width': '50vw' }"
+  (onHide)="refresh()"
+>
+  <label for="reason" class="block text-900 font-medium my-4">
+    {{
+      "Why do you want to deactivate restaurant [" +
+        restaurant?.restaurantName +
+        "]?"
+    }}
+  </label>
+  <div
+    class="field-checkbox"
+    *ngFor="let reason of deactivateReasons; let i = index"
+  >
+    <p-checkbox
+      [value]="reason"
+      [(ngModel)]="selectedDeactivateReasons"
+      [inputId]="'deactivateReason' + i"
+    ></p-checkbox>
+    <label [for]="'deactivateReason' + i">
+      {{ reason }}
+    </label>
+  </div>
+  <div class="field-checkbox flex gap-2">
+    <p-checkbox
+      [value]="!!otherReason"
+      [ngModel]="[true]"
+      [readonly]="true"
+    ></p-checkbox>
+    <input
+      type="text"
+      pInputText
+      class="w-full"
+      placeholder="Other reason"
+      [ngModel]="otherReason"
+      (ngModelChange)="onOtherReasonChange($event)"
+    />
+  </div>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Deactivate"
+    (click)="deactivateRestaurant()"
+    [disabled]="!selectedDeactivateReasons.length"
+  ></button>
+</p-dialog>
+<p-toast></p-toast>

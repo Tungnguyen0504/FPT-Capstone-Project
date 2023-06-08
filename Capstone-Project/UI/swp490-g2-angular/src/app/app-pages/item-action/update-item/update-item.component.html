@@ -1,0 +1,206 @@
+<div class="surface-section px-6 py-5">
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Back"
+    icon="pi pi-arrow-left"
+    class="p-button-rounded p-button-info"
+    routerLink=".."
+  ></button>
+  <div class="surface-section px-4 py-5 md:px-6 lg:px-8">
+    <div
+      class="flex align-items-start bg-gray-200 flex-column lg:flex-row lg:justify-content-between"
+    >
+      <div class="flex align-items-start flex-column md:flex-row">
+        <div class="p-5">
+          <span class="text-900 font-medium text-3xl"
+            >Update Item Information</span
+          >
+          <div class="flex align-items-center flex-wrap text-sm">
+            <div class="mr-5 mt-3">
+              <span class="font-medium text-500"
+                >Update Information for () Item
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form
+    #form="ngForm"
+    class="surface-section px-2 py-4 md:px-6 lg:px-8"
+    (ngSubmit)="updateItem()"
+  >
+    <label for="itemName" class="block text-900 font-medium my-3"
+      >Item Name</label
+    >
+    <div class="grid">
+      <div class="col-12">
+        <div class="p-inputgroup">
+          <input type="text" pInputText placeholder="Item Name" maxlength="255"/>
+        </div>
+      </div>
+    </div>
+
+    <label for="Category" class="block text-900 font-medium my-3"
+      >Category</label
+    >
+    <div class="grid">
+      <div class="col-12">
+        <p-dropdown
+          [options]="groupedCategory"
+          [(ngModel)]="selectedCategory"
+          placeholder="Select Category"
+          [group]="true"
+          [style]="{ minWidth: '100%' }"
+        >
+          <ng-template let-group pTemplate="group">
+            <div class="flex align-items-center">
+              <span>{{ group.label }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+
+    <label for="price" class="block text-900 font-medium my-3">Price</label>
+    <div class="grid">
+      <div class="col-12">
+        <div class="p-inputgroup">
+          <input
+            id="price"
+            type="text"
+            pInputText
+            name="price"
+            placeholder="Price"
+            ngModel
+          />
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex align-items-center gap-1"
+      *ngIf="form.controls['price']?.dirty && form.controls['price']?.errors"
+    >
+      <i class="pi pi-times-circle text-danger"></i>
+      <small class="text-danger"> Enter a number only! </small>
+    </div>
+
+    <label for="quantity" class="block text-900 font-medium my-3"
+      >Quantity</label
+    >
+    <div class="grid">
+      <div class="col-12">
+        <div class="p-inputgroup">
+          <input
+            id="quantity"
+            type="text"
+            pInputText
+            name="quantity"
+            placeholder="Quantity"
+            ngModel
+          />
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex align-items-center gap-1"
+      *ngIf="
+        form.controls['quantity']?.dirty && form.controls['quantity']?.errors
+      "
+    >
+      <i class="pi pi-times-circle text-danger"></i>
+      <small class="text-danger"> Enter a number only! </small>
+    </div>
+
+    <label for="descr" class="block text-900 font-medium my-3"
+      >Description</label
+    >
+    <div class="grid">
+      <div class="col-12">
+        <div class="p-inputgroup">
+          <textarea
+            rows="5"
+            cols="30"
+            pInputTextarea
+            placeholder="Description"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <label for="photo" class="block text-900 font-medium my-3">Photo</label>
+    <div class="grid">
+      <div class="col-12">
+        <p-fileUpload
+          name="demo[]"
+          url="./upload.php"
+          (onUpload)="onUpload($event)"
+          accept="image/*"
+        >
+          <ng-template pTemplate="content">
+            <ul *ngIf="uploadedFiles.length">
+              <li *ngFor="let file of uploadedFiles">
+                {{ file.name }} - {{ file.size }} bytes
+              </li>
+            </ul>
+          </ng-template>
+        </p-fileUpload>
+      </div>
+    </div>
+
+    <div class="grid p-fluid">
+      <div class="col-12 md:col-6">
+        <button
+          pButton
+          pRipple
+          label="Save Changes"
+          icon="pi pi-check"
+          class="w-full mt-4"
+        ></button>
+      </div>
+      <div class="col-12 md:col-6">
+        <button
+          pButton
+          pRipple
+          label="Delete Item"
+          icon="pi pi-trash"
+          class="w-full mt-4 p-button-danger"
+          (click)="showModalDialog()"
+        ></button>
+        <p-dialog
+          header="Confirm to Delete Item?"
+          [(visible)]="displayModal"
+          [modal]="true"
+          [style]="{ width: '50vw' }"
+          [draggable]="false"
+          [resizable]="false"
+        >
+          <p class="m-0">Are you sure want to Delete this Item?</p>
+          <ng-template pTemplate="footer">
+            <button
+              pButton
+              pRipple
+              icon="pi pi-check"
+              label="Yes"
+              class="p-button-rounded p-button-success mr-2"
+              (click)="this.displayModal = false"
+            ></button>
+            <button
+              pButton
+              pRipple
+              icon="pi pi-ban"
+              label="No"
+              class="p-button-rounded p-button-danger"
+              (click)="this.displayModal = false"
+            ></button>
+          </ng-template>
+        </p-dialog>
+      </div>
+    </div>
+  </form>
+</div>

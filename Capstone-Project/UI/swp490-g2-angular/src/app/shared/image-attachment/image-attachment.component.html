@@ -1,0 +1,93 @@
+<ng-container *ngIf="imageStyle">
+  <div
+    *ngIf="url"
+    class="relative"
+    [ngClass]="{ hover: editable, 'cursor-pointer': editable }"
+    (click)="openDialog()"
+  >
+    <img
+      id="mainImage"
+      [src]="imageSrc"
+      [ngStyle]="imageStyle"
+      [ngClass]="{
+        'round-border': isRound
+      }"
+      class="border-round"
+    />
+    <div class="absolute w-full h-full top-0" *ngIf="editable">
+      <i
+        class="absolute top-50 left-50 pi pi-paperclip transform-middle text-white"
+      ></i>
+    </div>
+    <p-button
+      *ngIf="deletable"
+      icon="pi pi-times"
+      styleClass="p-button-rounded p-button-danger p-button-sm absolute top-0 right-0"
+      (click)="deleteImage()"
+    ></p-button>
+  </div>
+
+  <div
+    *ngIf="!url"
+    [ngStyle]="imageStyle"
+    [ngClass]="{
+      'cursor-pointer': editable,
+      hover: editable,
+      'round-button': isRound
+    }"
+    (click)="openDialog()"
+  >
+    <i *ngIf="editable" class="pi pi-paperclip"></i>
+  </div>
+</ng-container>
+
+<p-dialog
+  header="Image Attachment"
+  [(visible)]="dialogOpened"
+  [modal]="true"
+  [draggable]="true"
+  [resizable]="false"
+  [style]="{ 'min-width': '50vw' }"
+  contentStyleClass="py-2"
+>
+  <p-accordion (onOpen)="onAccordionTabChange($event)">
+    <p-accordionTab header="Upload an image" [selected]="true">
+      <p-fileUpload
+        #fileUpload
+        accept="image/*"
+        [maxFileSize]="1000000"
+        method="put"
+        [previewWidth]="100"
+        [customUpload]="true"
+        (onUpload)="onUpload()"
+        (uploadHandler)="upload($event)"
+        (onProgress)="progressReport($event)"
+      >
+      </p-fileUpload>
+    </p-accordionTab>
+    <p-accordionTab header="Choose from uploaded images" #imageSelectionTab>
+      <div *ngIf="images" class="grid">
+        <ng-container *ngFor="let image of images; let index = index">
+          <div class="col-3" key="index" *ngIf="image?.['src'] !== 'data:'">
+            <img
+              [src]="image?.['src']"
+              style="cursor: pointer; max-width: 100%"
+              [ngClass]="selectedImage === image ? 'selected' : ''"
+              (click)="selectImage(image)"
+            />
+          </div>
+        </ng-container>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      *ngIf="this.fileUploaded"
+      icon="pi pi-check"
+      (click)="onOked()"
+      label="Ok"
+      styleClass="p-button-text"
+    ></p-button>
+  </ng-template>
+</p-dialog>

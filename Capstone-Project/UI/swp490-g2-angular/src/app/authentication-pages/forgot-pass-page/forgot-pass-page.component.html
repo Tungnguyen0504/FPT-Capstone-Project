@@ -1,0 +1,104 @@
+<div class="forgot-password-container">
+  <form
+    #form="ngForm"
+    class="surface-card p-4 shadow-2 border-round w-full lg:w-6"
+    (ngSubmit)="forgotPassword()"
+  >
+    <div class="text-center mb-5">
+      <div
+        *ngIf="isChangingPassword"
+        class="text-900 text-3xl font-medium mb-3"
+      >
+        Change password
+      </div>
+      <div
+        *ngIf="!isChangingPassword"
+        class="text-900 text-3xl font-medium mb-3"
+      >
+        Forgot Password
+      </div>
+      <span class="text-600 font-medium line-height-3"
+        >Please input your e-mail here to receive the verification code
+      </span>
+    </div>
+    <div *ngIf="!isChangingPassword">
+      <label for="email" class="block text-900 font-medium my-2">
+        Email / Phone Number
+      </label>
+      <input
+        id="email"
+        type="email"
+        pInputText
+        class="w-full"
+        name="emailOrPhoneNumber"
+        ngModel
+      />
+      <div
+        class="flex align-items-center gap-1"
+        *ngIf="
+          form.controls['emailOrPhoneNumber']?.dirty &&
+          form.controls['emailOrPhoneNumber']?.errors
+        "
+      >
+        <i class="pi pi-times-circle text-danger"></i>
+        <small class="text-danger"> Enter a valid email address! </small>
+      </div>
+    </div>
+    <div *ngIf="verificationCodeShown">
+      <label for="verificationCode" class="block text-900 font-medium my-2">
+        Verification Code
+      </label>
+      <input
+        id="verificationCode"
+        type="text"
+        pInputText
+        class="w-full"
+        name="verificationCode"
+        ngModel
+      />
+      <div
+        class="flex align-items-center gap-1"
+        *ngIf="
+          form.controls['verificationCode']?.dirty &&
+          form.controls['verificationCode']?.errors
+        "
+      >
+        <i class="pi pi-times-circle text-danger"></i>
+        <small class="text-danger"> Enter a valid verification code! </small>
+      </div>
+    </div>
+
+    <app-password-fields
+      *ngIf="passwordsShown"
+      [isChangingPassword]="isChangingPassword"
+    ></app-password-fields>
+
+    <button
+      pButton
+      pRipple
+      [label]="submitButtonLabel"
+      icon="pi pi-hashtag"
+      class="w-full mt-3"
+      (click)="onVerificationCodeClicked()"
+      [disabled]="fgtPassButtonDisabled"
+    ></button>
+    <div class="flex gap-2 mt-3" *ngIf="!isChangingPassword">
+      <button
+        pButton
+        pRipple
+        label="Back to login"
+        icon="pi pi-user"
+        class="w-full"
+        (click)="navToLogin()"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Go to register"
+        icon="pi pi-id-card"
+        class="w-full"
+        (click)="navToRegister()"
+      ></button>
+    </div>
+  </form>
+</div>

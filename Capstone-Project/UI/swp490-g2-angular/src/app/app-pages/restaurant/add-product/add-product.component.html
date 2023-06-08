@@ -1,0 +1,38 @@
+<div class="my-5 text-center font-bold text-2xl">ADD PRODUCT FORM</div>
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+  <label for="productName">Product Name:</label>
+  <input type="text" id="productName" formControlName="productName" [ngClass]="{'invalid': productForm.get('productName')?.invalid && (productForm.get('productName')?.dirty || productForm.get('productName')?.touched)}" />
+  <div *ngIf="productForm.get('productName')?.invalid && (productForm.get('productName')?.dirty || productForm.get('productName')?.touched)">
+    <small class="error-message">Please enter a product name.</small>
+  </div>
+
+  <label for="price">Price:</label>
+  <input type="number" id="price" formControlName="price" [ngClass]="{'invalid': productForm.get('price')?.invalid && (productForm.get('price')?.dirty || productForm.get('price')?.touched)}" />
+  <div *ngIf="productForm.get('price')?.invalid && (productForm.get('price')?.dirty || productForm.get('price')?.touched)">
+    <small class="error-message">Please enter a valid price greater than or equal to 1.</small>
+  </div>
+
+  <label for="quantity">Quantity:</label>
+  <input type="number" id="quantity" formControlName="quantity" [ngClass]="{'invalid': productForm.get('quantity')?.invalid && (productForm.get('quantity')?.dirty || productForm.get('quantity')?.touched)}" />
+  <div *ngIf="productForm.get('quantity')?.invalid && (productForm.get('quantity')?.dirty || productForm.get('quantity')?.touched)">
+    <small class="error-message">Please enter a valid quantity greater than or equal to 1.</small>
+  </div>
+
+  <label for="description">Description:</label>
+  <textarea id="description" formControlName="description"></textarea>
+
+  <label for="productImages">Product Images:</label>
+  <input type="file" id="productImages" (change)="onFileSelected($event)" multiple />
+
+  <div formArrayName="productCategories">
+    <label for="productCategories">Product Categories:</label>
+    <div *ngFor="let category of productCategories; let i = index">
+      <label>
+        <input type="checkbox" [formControlName]="i" />
+        {{ category.productCategoryName }}
+      </label>
+    </div>
+  </div>
+
+  <button type="submit">Add New Product</button>
+</form>

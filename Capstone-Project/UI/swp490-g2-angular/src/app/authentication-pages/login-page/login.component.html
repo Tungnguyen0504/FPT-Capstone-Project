@@ -1,0 +1,84 @@
+<div class="login-container">
+  <form
+    #form="ngForm"
+    class="surface-card p-4 shadow-2 border-round w-full lg:w-6"
+    (ngSubmit)="login()"
+  >
+    <div class="text-center mb-5">
+      <div class="text-900 text-3xl font-medium mb-3">Sign in</div>
+      <span class="text-600 font-medium line-height-3">
+        Don't have an account?
+      </span>
+      <a
+        class="font-medium no-underline ml-2 text-blue-500 cursor-pointer"
+        (click)="navToRegister()"
+      >
+        Create today!
+      </a>
+    </div>
+
+    <div>
+      <label for="email" class="block text-900 font-medium my-2 required">
+        Email / Phone Number
+      </label>
+      <input
+        id="email"
+        type="text"
+        pInputText
+        class="w-full mb-1"
+        name="emailOrPhoneNumber"
+        ngModel
+        required
+      />
+      <div
+        class="flex align-items-center gap-1"
+        *ngIf="
+          form.controls['emailOrPhoneNumber']?.dirty &&
+          form.controls['emailOrPhoneNumber']?.errors
+        "
+      >
+        <i class="pi pi-times-circle text-danger"></i>
+        <small class="text-danger"> Enter a valid email address! </small>
+      </div>
+
+      <label for="password" class="block text-900 font-medium my-2 required"
+        >Password</label
+      >
+      <input
+        id="password"
+        type="password"
+        pInputText
+        class="w-full mb-1"
+        name="password"
+        ngModel
+        required
+      />
+    </div>
+    <div class="surface-border flex">
+      <button
+        pButton
+        pRipple
+        label="Sign In"
+        icon="pi pi-user"
+        class="w-full mt-4 mr-4"
+        [disabled]="loginButtonDisabled"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Forgot Password"
+        icon="pi pi-user"
+        class="w-full mt-4"
+        (click)="navToForgotPassword()"
+      ></button>
+    </div>
+    <button
+      pButton
+      pRipple
+      label="Back to Homepage"
+      icon="pi pi-user"
+      class="w-full mt-4"
+      (click)="navToHome()"
+    ></button>
+  </form>
+</div>

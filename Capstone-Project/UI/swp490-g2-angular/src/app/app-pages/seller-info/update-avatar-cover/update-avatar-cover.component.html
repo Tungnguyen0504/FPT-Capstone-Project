@@ -1,0 +1,109 @@
+<div class="surface-section px-6 py-5">
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Back"
+    icon="pi pi-arrow-left"
+    class="p-button-rounded p-button-info"
+    routerLink=".."
+  ></button>
+</div>
+<div class="surface-section px-4 py-5 md:px-6 lg:px-8">
+  <div
+    class="flex align-items-start bg-gray-200 flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <div class="p-5">
+        <span class="text-900 font-medium text-3xl"
+          >Change Avatar and Cover of Restaurant</span
+        >
+        <div class="flex align-items-center flex-wrap text-sm">
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500"
+              >Upload an Avatar and Cover Photo to Update New Brand
+              Identity</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  class="flex w-full relative align-items-center justify-content-start my-3 px-4"
+>
+  <div class="border-top-1 border-300 top-50 left-0 absolute w-full"></div>
+  <div class="px-2 z-1 surface-0 flex align-items-center">
+    <i class="pi pi-pencil text-900 mr-2"></i>
+    <span class="text-900 font-medium">Change Avatar</span>
+  </div>
+</div>
+<div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+  <div class="grid">
+    <div class="col-12 lg:col-6">
+      <div>
+        <img src="../../../../assets/avatars/images.jpg" class="w-5" />
+      </div>
+    </div>
+    <div class="col-12 lg:col-6 py-5 lg:py-3 lg:pl-5">
+      <p-fileUpload
+        name="demo[]"
+        url="./upload.php"
+        (onUpload)="onUpload($event)"
+        accept="image/*"
+      >
+        <ng-template pTemplate="content">
+          <ul *ngIf="uploadedFiles.length">
+            <li *ngFor="let file of uploadedFiles">
+              {{ file.name }} - {{ file.size }} bytes
+            </li>
+          </ul>
+        </ng-template>
+      </p-fileUpload>
+    </div>
+  </div>
+</div>
+<div
+  class="flex w-full relative align-items-center justify-content-start my-3 px-4"
+>
+  <div class="border-top-1 border-300 top-50 left-0 absolute w-full"></div>
+  <div class="px-2 z-1 surface-0 flex align-items-center">
+    <i class="pi pi-pencil text-900 mr-2"></i>
+    <span class="text-900 font-medium">Change Cover</span>
+  </div>
+</div>
+<div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+  <div class="grid">
+    <div class="col-12 lg:col-6">
+      <div>
+        <img src="../../../../assets/avatars/images.jpg" class="w-5" />
+      </div>
+    </div>
+    <div class="col-12 lg:col-6 py-5 lg:py-3 lg:pl-5">
+      <p-fileUpload
+        name="demo[]"
+        url="./upload.php"
+        (onUpload)="onUpload($event)"
+        accept="image/*"
+      >
+        <ng-template pTemplate="content">
+          <ul *ngIf="uploadedFiles.length">
+            <li *ngFor="let file of uploadedFiles">
+              {{ file.name }} - {{ file.size }} bytes
+            </li>
+          </ul>
+        </ng-template>
+      </p-fileUpload>
+    </div>
+  </div>
+</div>
+<div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+  <button
+    pButton
+    pRipple
+    label="Update"
+    icon="pi pi-upload"
+    class="w-full mt-4"
+  ></button>
+</div>

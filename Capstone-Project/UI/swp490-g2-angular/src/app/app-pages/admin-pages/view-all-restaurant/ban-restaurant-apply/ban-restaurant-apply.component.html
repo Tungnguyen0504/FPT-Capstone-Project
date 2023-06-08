@@ -1,0 +1,139 @@
+<div class="surface-section px-6 py-5">
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Back"
+    icon="pi pi-arrow-left"
+    class="p-button-rounded p-button-info"
+    routerLink=".."
+  ></button>
+</div>
+<div class="surface-section px-4 py-5 md:px-6 lg:px-8">
+  <div
+    class="flex align-items-start bg-gray-200 flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <div class="p-5">
+        <span class="text-900 font-medium text-3xl"> Ban Restaurant</span>
+        <div class="flex align-items-center flex-wrap text-sm">
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500"
+              >Select Reasons to Ban this Restaurant</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+  <div class="grid">
+    <div class="col-12 md:col-6">
+      <div class="p-fluid pr-0 md:pr-6">
+        <div class="field">
+          <label for="res.name" class="block text-900 font-medium my-2"
+            >Restaurant Name</label
+          >
+          <input
+            id="res.name"
+            type="text"
+            name="res.name"
+            disabled
+            pInputText
+            class="w-full mb-1 py-3 px-2 text-lg"
+            ngModel
+          />
+        </div>
+        <label for="reason" class="block text-900 font-medium my-4"
+          >Why do you want to ban this account?</label
+        >
+        <div class="field-checkbox">
+          <p-checkbox
+            name="group1"
+            value="1"
+            [(ngModel)]="selectedReason"
+            inputId="1"
+          ></p-checkbox>
+          <label for="1"
+            >This restaurant is no longer operating around the Hoa Lac
+            area</label
+          >
+        </div>
+        <div class="field-checkbox">
+          <p-checkbox
+            name="group1"
+            value="2"
+            [(ngModel)]="selectedReason"
+            inputId="2"
+          ></p-checkbox>
+          <label for="2"
+            >This restaurant does not have food safety certifications</label
+          >
+        </div>
+        <div class="field-checkbox">
+          <p-checkbox
+            name="group1"
+            value="3"
+            [(ngModel)]="selectedReason"
+            inputId="3"
+          ></p-checkbox>
+          <label for="3">Bad attitude when interaction with Buyers</label>
+        </div>
+        <div class="field-checkbox">
+          <p-checkbox
+            name="group1"
+            value="4"
+            [(ngModel)]="selectedReason"
+            inputId="4"
+          ></p-checkbox>
+          <label for="4">This restaurant violates business rules</label>
+        </div>
+        <div class="field-checkbox">
+          <p-checkbox
+            name="group1"
+            value="5"
+            [(ngModel)]="selectedReason"
+            inputId="5"
+          ></p-checkbox>
+          <label for="5"
+            >Many bad feedback from customers about food quality, delivery
+            method, ...</label
+          >
+        </div>
+        <button
+          pButton
+          pRipple
+          label="Ban"
+          icon="pi pi-ban"
+          class="w-full mt-4"
+        ></button>
+      </div>
+    </div>
+    <div
+      class="col-12 md:col-6 bg-no-repeat bg-right-bottom"
+      style="
+        background-image: url('assets/images/blocks/contact/contact-1.png');
+      "
+    >
+      <div class="text-900 text-2xl font-medium mb-6">Contact Us</div>
+      <div class="text-700 line-height-3 mb-6">
+        If you want to report more problem. Please contact:
+      </div>
+      <ul class="list-none p-0 m-0 mt-6 text-700">
+        <li class="flex align-items-center mb-3">
+          <i class="pi pi-phone mr-2"></i>
+          <span>0852102000</span>
+        </li>
+        <li class="flex align-items-center mb-3">
+          <i class="pi pi-facebook mr-2"></i>
+          <span>https://www.facebook.com/tuong.quan.22</span>
+        </li>
+        <li class="flex align-items-center">
+          <i class="pi pi-inbox mr-2"></i>
+          <span>tranquocbao2210@gmail.com</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

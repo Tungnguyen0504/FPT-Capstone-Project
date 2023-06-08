@@ -1,0 +1,22 @@
+<div class="flex gap-1">
+  <button
+    type="button"
+    pButton
+    icon="pi pi-sort-alt"
+    class="p-button-outlined p-button-secondary w-7rem p-2"
+    iconPos="right"
+    label="Sort By"
+    (click)="menu.toggle($event)"
+  ></button>
+  <p-menu #menu [popup]="true" [model]="items"></p-menu>
+
+  <button
+    type="button"
+    pButton
+    [icon]="sortDirectionIcon"
+    class="p-button-outlined p-button-secondary p-2"
+    (click)="changeSortDirection()"
+    iconPos="right"
+    [label]="selectedItem.label!"
+  ></button>
+</div>

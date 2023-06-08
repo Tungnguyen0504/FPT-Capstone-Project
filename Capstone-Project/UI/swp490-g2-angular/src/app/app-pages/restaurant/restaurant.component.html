@@ -1,0 +1,475 @@
+<ng-container *ngIf="restaurant">
+  <div class="p-5" *ngIf="!restaurant.id">
+    <h1>The restaurant does not exist!</h1>
+  </div>
+
+  <ng-container *ngIf="restaurant.id">
+    <div class="flex relative lg:static surface-ground">
+      <div class="flex flex-column relative flex-auto">
+        <div class="flex flex-column flex-auto">
+          <div class="surface-section p-5">
+            <div
+              class="flex align-items-start flex-column lg:flex-row lg:justify-content-between"
+            >
+              <div class="flex align-items-start flex-column md:flex-row">
+                <app-image-attachment
+                  [uploadUrl]="uploadUrl"
+                  [url]="restaurant.avatarFile?.filePath"
+                  (selectedImageHandler)="updateAvatar($event)"
+                  method="PUT"
+                  class="mr-5 mb-3 lg:mb-0"
+                  [editable]="editable"
+                ></app-image-attachment>
+                <div>
+                  <div class="flex flex-wrap gap-5 align-items-center">
+                    <app-restaurant-name
+                      [restaurant]="restaurant"
+                      [editable]="editable"
+                    ></app-restaurant-name>
+                    <!-- <i class="pi pi-star text-2xl ml-4 text-yellow-500"></i> -->
+                    <div class="flex gap-2">
+                      <p-rating
+                        [ngModel]="restaurantReviewResponse.averageStars"
+                        [readonly]="true"
+                        [cancel]="false"
+                      ></p-rating>
+                      <span>
+                        {{
+                          restaurantReviewResponse.averageStars
+                            | number : "1.1-1"
+                        }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- <div
+                    class="flex align-items-center flex-wrap text-sm mr-3 mt-3"
+                  >
+                    <div>
+                      <span
+                        class="font-medium text-600 mr-3"
+                        style="font-size: 20px"
+                      >
+                        Opening status
+                      </span>
+                    </div>
+                    <p-inputSwitch [(ngModel)]="isOpening"></p-inputSwitch>
+                  </div> -->
+
+                  <div
+                    class="flex align-items-center flex-wrap text-sm"
+                    *ngIf="fullAddress"
+                  >
+                    <div class="mr-5 mt-3">
+                      <i class="pi pi-map-marker"></i>
+                      <span class="font-medium text-500">
+                        {{ fullAddress }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div
+                    class="flex align-items-center flex-wrap text-sm"
+                    *ngIf="restaurant.phoneNumber"
+                  >
+                    <div class="mr-5 mt-3">
+                      <span class="font-medium text-500">
+                        <i class="pi pi-phone"></i>
+                        <a [href]="'tel:' + restaurant.phoneNumber">
+                          {{ restaurant.phoneNumber }}</a
+                        >
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="flex align-items-center flex-wrap text-sm">
+                    <app-open-closed-time
+                      [restaurant]="restaurant"
+                      [editable]="editable"
+                      (saveChanges)="refresh()"
+                    ></app-open-closed-time>
+                    <!-- <div class="mr-5 mt-3">
+                      <span class="font-medium text-500">COLLECTIONS</span>
+                      <div class="text-700 mt-2">17</div>
+                    </div>
+                    <div class="mt-3">
+                      <span class="font-medium text-500">SHOTS</span>
+                      <div class="text-700 mt-2">130</div>
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 lg:mt-0">
+                <!-- <button
+                  pButton
+                  pRipple
+                  icon="pi pi-bookmark"
+                  class="p-button-rounded mr-2"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-heart"
+                  class="p-button-rounded p-button-success mr-2"
+                ></button> -->
+                <app-restaurant-update-information
+                  [restaurant]="restaurant"
+                  [editable]="editable"
+                  (hidden)="refresh()"
+                ></app-restaurant-update-information>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="surface-section px-4">
+      <div class="grid m-0">
+        <div class="col-12 lg:col-3 flex flex-column">
+          <div class="flex flex-column p-0">
+            <p *ngIf="categories.length === 0">No categories</p>
+          </div>
+
+          <p-accordion [multiple]="true" styleClass="mb-5">
+            <p-accordionTab [selected]="true" header="Food name">
+              <div>
+                <span class="p-input-icon-right w-full">
+                  <i class="pi pi-search"></i>
+                  <input
+                    type="text"
+                    pInputText
+                    placeholder="Search"
+                    class="w-full"
+                    (keyup)="fulltextSearch()"
+                    [(ngModel)]="fulltext"
+                  />
+                </span>
+              </div>
+            </p-accordionTab>
+            <p-accordionTab [selected]="true" header="Category">
+              <div
+                class="transition-all transition-duration-400 transition-ease-in-out"
+              >
+                <div
+                  class="flex w-full justify-content-between"
+                  *ngFor="let category of categories"
+                >
+                  <div class="field-checkbox">
+                    <p-checkbox
+                      [value]="category.id"
+                      [inputId]="'productCategory_' + category.id"
+                      [(ngModel)]="selectedCategoryIds"
+                      (onChange)="changeFilter()"
+                    ></p-checkbox>
+                    <label
+                      [for]="'productCategory_' + category.id"
+                      class="text-900"
+                    >
+                      {{ category.productCategoryName }}
+                    </label>
+                  </div>
+                </div>
+                <a
+                  class="block cursor-pointer text-primary font-medium"
+                  (click)="toggleAllCategories(true)"
+                >
+                  Select all
+                </a>
+                <a
+                  class="block cursor-pointer mt-3 text-primary font-medium"
+                  (click)="toggleAllCategories(false)"
+                >
+                  Deselect all
+                </a>
+              </div>
+            </p-accordionTab>
+            <p-accordionTab [selected]="true" header="Price Range">
+              <div
+                class="transition-all transition-duration-400 transition-ease-in-out"
+              >
+                <p-slider
+                  [(ngModel)]="selectedPriceRange"
+                  [range]="true"
+                  styleClass="mt-3 mx-auto"
+                  [style]="{ 'max-width': '93%' }"
+                  [min]="priceRange[0]"
+                  [max]="priceRange[1]"
+                  [step]="500"
+                  (onSlideEnd)="changeFilter()"
+                ></p-slider>
+                <div class="flex my-4">
+                  <p-inputNumber
+                    [(ngModel)]="selectedPriceRange[0]"
+                    inputStyleClass="w-full mr-3"
+                    [readonly]="true"
+                  ></p-inputNumber>
+                  <p-inputNumber
+                    [(ngModel)]="selectedPriceRange[1]"
+                    inputStyleClass="w-full"
+                    [readonly]="true"
+                  ></p-inputNumber>
+                </div>
+              </div>
+            </p-accordionTab>
+          </p-accordion>
+        </div>
+        <!-- <div
+        class="w-full border-2 border-dashed surface-border surface-section mt-3 lg:mt-0"
+        style="min-height: 25rem"
+      ></div> -->
+        <div class="col-12 lg:col-9 flex flex-column flex-grow-1 gap-5">
+          <div class="flex justify-content-between">
+            <app-sort-by (sortedBy)="onSortByChange($event)"></app-sort-by>
+            <p-button
+              *ngIf="editable"
+              label="Manage revenue"
+              class="align-self-center"
+              routerLink="statistic"
+            ></p-button>
+          </div>
+
+          <app-product-list
+            [products]="products"
+            [restaurant]="restaurant"
+            (productDeleted)="refresh()"
+          ></app-product-list>
+
+          <p-button
+            label="Load more"
+            class="align-self-center"
+            (onClick)="loadMore()"
+            *ngIf="loadMoreShown"
+          ></p-button>
+        </div>
+      </div>
+      <!-- <app-add-product></app-add-product> -->
+      <div class="text-right py-2" *ngIf="editable">
+        <a
+          pButton
+          label="Add product"
+          class="align-self-center"
+          routerLink="product"
+        ></a>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<div class="surface-section px-4 py-8 md:px-6 lg:px-8 mt-5">
+  <div class="grid">
+    <div class="col-12 lg:col-4">
+      <ng-container *ngIf="user && canReview">
+        <div class="font-medium text-xl text-900 mb-3">
+          Share your experience
+        </div>
+        <button
+          pButton
+          pRipple
+          label="Write a review"
+          class="p-button-rounded"
+          (click)="openRestaurantReviewDialog()"
+        ></button>
+      </ng-container>
+    </div>
+    <div
+      class="col-12 lg:col-4 flex align-items-start justify-content-center py-5 lg:py-0"
+    >
+      <div>
+        <span class="text-5xl text-900 font-bold mr-2">
+          {{ totalCountReviews }}
+        </span>
+        <span class="text-5xl text-600">Reviews</span>
+        <div class="mt-3 text-center">
+          <p-rating
+            [ngModel]="restaurantReviewResponse.averageStars"
+            [readonly]="true"
+            [cancel]="false"
+          ></p-rating>
+          <span>
+            {{ restaurantReviewResponse.averageStars | number : "1.1-1" }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 lg:col-4">
+      <ul class="list-none p-0 m-0">
+        <li class="flex align-items-center mb-2">
+          <a class="cursor-pointer" (click)="onStarClick()"> All reviews </a>
+        </li>
+        <li
+          class="flex align-items-center mb-2 cursor-pointer"
+          *ngFor="let star of [5, 4, 3, 2, 1]"
+          (click)="onStarClick(star)"
+        >
+          <span class="text-900 font-medium mr-1 w-1rem"> {{ star }} </span>
+          <i class="pi pi-star-fill text-yellow-500 mr-2"></i>
+          <div class="overflow-hidden flex-auto surface-300">
+            <p-progressBar
+              [value]="getReviewRatio(star)"
+              [style]="{ height: '7px' }"
+              [showValue]="false"
+            ></p-progressBar>
+          </div>
+          <span class="text-500 font-medium ml-2">
+            {{ getReviewRatio(star) }}%
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="mt-5">
+    <p-paginator
+      (onPageChange)="onReviewPageChange($event)"
+      [totalRecords]="totalReviewRecords"
+      [rowsPerPageOptions]="[5, 10, 20]"
+    ></p-paginator>
+    <ul class="list-none m-0 p-0">
+      <li
+        class="py-5 border-top-1 surface-border"
+        *ngFor="
+          let review of restaurantReviewResponse.restaurantReviewPage?.content
+        "
+      >
+        <div class="flex align-items-center justify-content-between mb-3">
+          <div class="flex align-items-center">
+            <div class="flex flex-column">
+              <span class="text-900 font-medium mb-1">
+                <strong>{{ getFullName(review.reviewer) }}</strong>
+                ({{ review.reviewer?.email }})
+              </span>
+              <span class="text-500 font-medium text-sm">
+                {{ getDate(review.modifiedAt) | date : "dd/MM/yyyy HH:mm" }}
+              </span>
+            </div>
+          </div>
+          <div class="flex align-items-center">
+            <p-rating
+              name="stars"
+              [(ngModel)]="review.stars"
+              [cancel]="false"
+              [readonly]="true"
+            ></p-rating>
+          </div>
+        </div>
+        <div class="mb-2 text-900 text-2xl font-medium">
+          {{ review.heading }}
+        </div>
+
+        <p
+          class="text-600 p-0 m-0 line-height-3"
+          [innerText]="review.comment"
+        ></p>
+
+        <div class="flex flex-column" *ngIf="restaurant">
+          <div class="flex gap-2 align-self-center">
+            <button
+              pButton
+              pRipple
+              [label]="review.replySeller ? 'Change comment' : 'Reply'"
+              class="p-button-text align-self-center"
+              (click)="openReplyPanel(review)"
+              *ngIf="canReply"
+            ></button>
+            <button
+              pButton
+              pRipple
+              label="Delete comment"
+              class="p-button-danger align-self-center"
+              (click)="deleteComment(review)"
+              *ngIf="canReply && review.replySeller"
+            ></button>
+          </div>
+          <div
+            class="mt-5 flex align-items-center gap-2 sm:gap-5"
+            *ngIf="review.replySeller"
+          >
+            <app-image-attachment
+              [url]="restaurant.avatarFile?.filePath"
+              [editable]="false"
+            ></app-image-attachment>
+            <div
+              class="border-200 border-1 border-round p-3 surface-50 flex-auto"
+            >
+              <span class="text-900 font-medium"> Restaurant's reply </span>
+              <textarea
+                pInputTextarea
+                class="w-full my-1"
+                [(ngModel)]="review.replyComment"
+                required
+                *ngIf="canReply && review['isReplying']"
+              ></textarea>
+              <button
+                pButton
+                pRipple
+                label="Send"
+                (click)="sendReply(review)"
+                *ngIf="canReply && review['isReplying']"
+              ></button>
+
+              <p
+                class="text-600 line-height-3 mt-3 mb-0 p-0"
+                [innerText]="review.replyComment"
+                *ngIf="!canReply || !review['isReplying']"
+              ></p>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<p-dialog
+  header="Write a review"
+  [(visible)]="restaurantReviewVisible"
+  [modal]="true"
+  [style]="{ 'min-width': '50vw' }"
+>
+  <form
+    class="surface-card p-4 shadow-2 border-round w-full"
+    (ngSubmit)="submitReview()"
+    #restaurantReviewForm="ngForm"
+  >
+    <p-rating
+      name="stars"
+      [(ngModel)]="restaurantReview.stars"
+      [cancel]="false"
+    ></p-rating>
+
+    <label for="reviewHeading" class="block text-900 font-medium my-2 required">
+      Heading
+    </label>
+    <input
+      id="reviewHeading"
+      type="text"
+      pInputText
+      class="w-full mb-1"
+      name="reviewHeading"
+      [(ngModel)]="restaurantReview.heading"
+      #reviewHeading="ngModel"
+      required
+    />
+
+    <label for="reviewComment" class="block text-900 font-medium my-2 required">
+      Comment
+    </label>
+    <textarea
+      id="reviewComment"
+      pInputTextarea
+      class="w-full mb-1"
+      name="reviewComment"
+      [(ngModel)]="restaurantReview.comment"
+      #description="ngModel"
+      required
+    ></textarea>
+
+    <button
+      pButton
+      pRipple
+      label="Submit"
+      class="w-full mt-3"
+      [disabled]="restaurantReviewSubmitButtonDisabled"
+    ></button>
+  </form>
+</p-dialog>

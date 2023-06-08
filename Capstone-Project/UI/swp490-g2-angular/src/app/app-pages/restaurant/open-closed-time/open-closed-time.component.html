@@ -1,0 +1,42 @@
+<div class="flex text-sm">
+  <div class="mr-5 mt-3">
+    <span class="font-medium text-500">Open time</span>
+    <div class="text-700 mt-2" *ngIf="!isEditing">
+      <strong>
+        {{ getLocalTimeDisplay(restaurant.openTime) }}
+      </strong>
+    </div>
+    <div>
+      <p-calendar
+        *ngIf="isEditing"
+        [(ngModel)]="openTimeModel"
+        [timeOnly]="true"
+      ></p-calendar>
+    </div>
+  </div>
+  <div class="mr-5 mt-3">
+    <span class="font-medium text-500">Closed time</span>
+    <div class="text-700 mt-2" *ngIf="!isEditing">
+      <strong>
+        {{ getLocalTimeDisplay(restaurant.closedTime) }}
+      </strong>
+    </div>
+    <div>
+      <p-calendar
+        *ngIf="isEditing"
+        [(ngModel)]="closedTimeModel"
+        [timeOnly]="true"
+      ></p-calendar>
+    </div>
+  </div>
+  <button
+    *ngIf="editable"
+    pButton
+    pRipple
+    pTooltip="Open/closed time"
+    type="button"
+    [icon]="isEditing ? 'pi pi-check' : 'pi pi-pencil'"
+    class="ml-2 p-button-text"
+    (click)="onButtonClick()"
+  ></button>
+</div>

@@ -1,0 +1,22 @@
+<p-dialog
+  header="Verification code"
+  [(visible)]="visible"
+  [style]="{ width: '50vw' }"
+  [closable]="false"
+  [modal]="true"
+>
+  <form
+    #form="ngForm"
+    class="flex flex-column align-items-center p-1"
+    (ngSubmit)="submit()"
+  >
+    <input type="text" pInputText name="code" ngModel />
+    <!-- <small class="p-error block">Username is not available.</small> -->
+    <p-button
+      label="Submit"
+      class="mt-2"
+      [disabled]="buttonDisabled" 
+      type="submit"
+    ></p-button>
+  </form>
+</p-dialog>

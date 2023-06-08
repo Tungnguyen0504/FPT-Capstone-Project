@@ -1,0 +1,115 @@
+<div class="surface-section px-6 py-5">
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Back"
+    icon="pi pi-arrow-left"
+    class="p-button-rounded p-button-info"
+    routerLink="../.."
+  ></button>
+</div>
+<div class="surface-section px-4 py-5 md:px-6 lg:px-8">
+  <div
+    class="flex align-items-start bg-gray-200 flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <div class="p-5">
+        <span class="text-900 font-medium text-3xl">
+          View User Information Details</span
+        >
+        <div class="flex align-items-center flex-wrap text-sm">
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500"
+              >View Information Details of User {{ user?.firstName }}
+              {{ user?.middleName }} {{ user?.lastName }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="surface-section px-6 py-5">
+  <div
+    class="flex align-items-start flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <img
+        src="../../../../../assets/avatars/images.jpg"
+        class="mr-5 mb-3 lg:mb-0"
+        style="width: 90px; height: 90px"
+      />
+      <div>
+        <span class="text-900 font-medium text-3xl"
+          >{{ user?.firstName }} {{ user?.middleName }}
+          {{ user?.lastName }}</span
+        >
+      </div>
+    </div>
+  </div>
+</div>
+<div class="px-6 py-5">
+  <div class="surface-card p-4 shadow-2 border-round">
+    <div class="font-medium text-3xl text-900 mb-3">User Information</div>
+    <ul class="list-none p-0 m-0 border-top-1 border-300">
+      <li class="flex align-items-center py-3 px-2 flex-wrap surface-100">
+        <div class="text-500 w-full md:w-2 font-medium">Email</div>
+        <div class="text-900 w-full md:w-10">{{ user?.email }}</div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap">
+        <div class="text-500 w-full md:w-2 font-medium">Full Name</div>
+        <div class="text-900 w-full md:w-10">
+          {{ user?.firstName }} {{ user?.middleName }} {{ user?.lastName }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap surface-100">
+        <div class="text-500 w-full md:w-2 font-medium">Date of Birth</div>
+        <div class="text-900 w-full md:w-10">
+          {{ user?.dateOfBirth | date : "dd/MM/yyyy" }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap">
+        <div class="text-500 w-full md:w-2 font-medium">Created Date</div>
+        <div class="text-900 w-full md:w-10">
+          {{ user?.createdAt | date : "dd/MM/yyyy" }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap surface-100">
+        <div class="text-500 w-full md:w-2 font-medium">Phone Number</div>
+        <div class="text-900 w-full md:w-10">
+          {{ user?.phoneNumber }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap">
+        <div class="text-500 w-full md:w-2 font-medium">Address</div>
+        <div class="text-900 w-full md:w-10">
+          {{ user?.address?.specificAddress }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap surface-100">
+        <div class="text-500 w-full md:w-2 font-medium">Roles</div>
+        <div class="text-900 w-full md:w-10">{{ user?.roles }}</div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap">
+        <div class="text-500 w-full md:w-2 font-medium">Status</div>
+        <div class="text-900 w-full md:w-10">
+          <app-user-status [user]="user"></app-user-status>
+        </div>
+      </li>
+      <li
+        class="flex align-items-center py-3 px-2 flex-wrap surface-100"
+        *ngIf="user?.userStatus === 'BANNED'"
+      >
+        <div class="text-500 w-full md:w-2 font-medium">Banned Reasons</div>
+        <div class="text-900 w-full md:w-10">
+          <ul>
+            <li *ngFor="let reason of bannedReasons">
+              {{ reason }}
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

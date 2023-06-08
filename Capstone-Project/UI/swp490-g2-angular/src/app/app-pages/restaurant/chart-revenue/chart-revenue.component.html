@@ -1,0 +1,47 @@
+<div class="flex flex-column gap-5 p-2 lg:p-5">
+  <div>
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Back"
+      icon="pi pi-arrow-left"
+      class="p-button-rounded p-button-info"
+      routerLink=".."
+    ></button>
+  </div>
+
+  <h1 class="text-center">
+    Income Over Time of {{ restaurant.restaurantName }}
+  </h1>
+  <p-chart type="line" [data]="data" [options]="options"></p-chart>
+
+  <div
+    class="w-full flex flex-column sm:flex-row justify-content-between gap-2"
+  >
+    <button
+      pButton
+      pRipple
+      [label]="'Previous ' + selectedPeriod.name"
+      type="button"
+      (click)="prev()"
+      class="flex-order-1 sm:flex-order-0"
+    ></button>
+    <p-dropdown
+      [options]="periods"
+      [(ngModel)]="selectedPeriod"
+      optionLabel="name"
+      class="flex-order-0 sm:flex-order-1"
+      styleClass="w-full sm:w-auto"
+      (onChange)="changePeriod()"
+    ></p-dropdown>
+    <button
+      pButton
+      pRipple
+      [label]="'Next ' + selectedPeriod.name"
+      type="button"
+      (click)="next()"
+      class="flex-order-2"
+    ></button>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div
+  class="surface-overlay px-4 py-2 md:px-6 lg:px-8 flex align-items-stretch relative border-bottom-1 surface-border"
+>
+  <div class="grid w-full">
+    <div class="col-12 md:col-6 p-input-icon-left p-input-filled">
+      <i class="pi pi-search"></i>
+      <input
+        pInputText
+        type="text"
+        class="w-full"
+        placeholder="Search restaurant name or food name"
+        [(ngModel)]="restaurantFullText"
+        (keyup)="onFullTextSearchChange()"
+      />
+    </div>
+  </div>
+</div>
+
+<div class="surface-section px-4 md:px-6 lg:px-8">
+  <div class="flex flex-column gap-2">
+    <div class="flex align-items-center mb-4 md:mb-0">
+      <div class="text-900 font-bold text-3xl">Restaurants</div>
+      <p-badge
+        *ngIf="!hasPagination"
+        [value]="restaurants.length.toString()"
+        styleClass="ml-3 bg-gray-200 text-gray-900 p-0 border-circle"
+      ></p-badge>
+    </div>
+
+    <app-update-shipping-address
+      *ngIf="hasCurrentUser"
+      [destinationAddress]="destinationAddress"
+      (destinationAddressChange)="onDestinationAddressChange($event)"
+    ></app-update-shipping-address>
+
+    <div class="flex flex-wrap gap-5">
+      <div class="flex align-items-center gap-2" *ngIf="hasCurrentUser">
+        <label for="distance"> Distance radius </label>
+        <p-dropdown
+          inputId="distance"
+          [options]="distances"
+          [(ngModel)]="distance"
+          optionLabel="name"
+          (onChange)="searchRestaurants()"
+        ></p-dropdown>
+      </div>
+      <div class="flex align-items-center gap-2 flex-wrap">
+        <label for="categories"> Categories </label>
+        <p-multiSelect
+          inputId="categories"
+          [options]="categories"
+          [(ngModel)]="selectedCategories"
+          defaultLabel="Select a category"
+          optionLabel="restaurantCategoryName"
+          (onChange)="searchRestaurants()"
+        ></p-multiSelect>
+      </div>
+    </div>
+  </div>
+  <p-divider styleClass="w-full border-gray-200"></p-divider>
+  <div class="grid justify-content-center flex-column lg:flex-row">
+    <div class="col-12 py-4 lg:pr-4 flex-order-2 lg:flex-order-1">
+      <div class="surface-0 p-4 shadow-2 border-round">
+        <p-paginator
+          (onPageChange)="onPageChange($event)"
+          [totalRecords]="totalRestaurants"
+          [rowsPerPageOptions]="[6, 12, 24]"
+          *ngIf="hasPagination"
+        ></p-paginator>
+        <ul class="list-none p-0 m-0 grid">
+          <li
+            class="col-12 md:col-6"
+            *ngFor="let restaurant of restaurants"
+            (click)="onRestaurantListItemClick(restaurant)"
+          >
+            <app-restaurant-card
+              [currentUser]="currentUser"
+              [restaurant]="restaurant"
+              [hasDistance]="hasCurrentUser"
+              (restaurantNameClick)="onRestaurantNameClick(restaurant)"
+            ></app-restaurant-card>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-12 lg:col-6 flex-order-1 lg:flex-order-2" [hidden]="true">
+      <div
+        [hidden]="!currentUser?.address?.id"
+        #mapContainer
+        class="border-round w-full h-screen sticky top-0"
+      ></div>
+      <div [hidden]="currentUser?.address?.id">
+        <h1>Please update your address to show the map!</h1>
+      </div>
+    </div>
+  </div>
+</div>

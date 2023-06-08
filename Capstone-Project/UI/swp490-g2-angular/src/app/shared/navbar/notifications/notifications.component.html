@@ -1,0 +1,40 @@
+<a
+  class="cursor-pointer h-full inline-flex align-items-center text-600 py-3 xl:py-0 px-3 border-left-2 xl:border-left-none xl:border-bottom-2 border-transparent hover:border-500 transition-colors transition-duration-150"
+  (click)="show($event)"
+>
+  <span
+    class="pi pi-bell mr-3 xl:mr-0"
+    pBadge
+    [value]="(notifications.length || 0) + ''"
+  ></span>
+  <span class="font-medium inline xl:hidden">Notifications</span>
+</a>
+
+<p-overlayPanel #op>
+  <ul class="list-none p-0 m-0" style="max-height: 40rem; overflow-y: auto">
+    <li
+      class="pb-3 border-bottom-1 surface-border cursor-pointer"
+      *ngFor="let notification of notifications"
+      (click)="read(notification)"
+    >
+      <div class="font-medium text-900 mb-2">
+        {{ getModifiedDate(notification.modifiedAt) }}
+      </div>
+      <div class="line-height-3 text-600" style="max-width: 30rem">
+        {{ notification.message }}
+      </div>
+    </li>
+  </ul>
+  <div class="flex justify-content-between pt-3">
+    <button
+      *ngIf="notifications.length"
+      pButton
+      pRipple
+      label="Clear All"
+      class="p-button-outlined p-button-secondary w-full mr-2"
+      type="button"
+      (click)="clear()"
+    ></button>
+    <strong *ngIf="!notifications.length"> No notifications </strong>
+  </div>
+</p-overlayPanel>

@@ -1,0 +1,129 @@
+<div class="surface-section flex flex-column gap-5 p-2 lg:p-5">
+  <div>
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Back"
+      icon="pi pi-arrow-left"
+      class="p-button-rounded p-button-info"
+      routerLink="../.."
+    ></button>
+  </div>
+  <div
+    class="flex align-items-start bg-gray-200 flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <div class="p-5">
+        <span class="text-900 font-medium text-3xl"> Ban User</span>
+        <div class="flex align-items-center flex-wrap text-sm">
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500"
+              >Select Reason to Ban User
+              <b
+                >{{ user?.firstName }} {{ user?.middleName }}
+                {{ user?.lastName }}</b
+              >
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="col-12 md:col-6">
+      <div class="p-fluid pr-0 md:pr-6">
+        <div class="field">
+          <label for="email" class="block text-900 font-medium my-2"
+            ><h1>Email: {{ user?.email }}</h1></label
+          >
+        </div>
+        <label for="reason" class="block text-900 font-medium my-4"
+          >Why do you want to ban this account?</label
+        >
+        <div
+          class="field-checkbox"
+          *ngFor="let reason of buyerReasons; let i = index"
+        >
+          <p-checkbox
+            [value]="reason"
+            [(ngModel)]="selectedReasons"
+            [inputId]="'buyerReason_' + i"
+          ></p-checkbox>
+          <label [for]="'buyerReason_' + i">
+            {{ reason }}
+          </label>
+        </div>
+        <ng-container *ngIf="user?.seller">
+          <p-divider></p-divider>
+          <div
+            class="field-checkbox"
+            *ngFor="let reason of sellerReasons; let i = index"
+          >
+            <p-checkbox
+              [value]="reason"
+              [(ngModel)]="selectedReasons"
+              [inputId]="'sellerReason_' + i"
+            ></p-checkbox>
+            <label [for]="'sellerReason_' + i">
+              {{ reason }}
+            </label>
+          </div>
+        </ng-container>
+
+        <p-divider></p-divider>
+
+        <div class="field-checkbox flex gap-2">
+          <p-checkbox
+            [value]="!!otherReason"
+            [ngModel]="[true]"
+            [readonly]="true"
+          ></p-checkbox>
+          <input
+            type="text"
+            pInputText
+            class="w-full"
+            placeholder="Other reason"
+            [ngModel]="otherReason"
+            (ngModelChange)="onOtherReasonChange($event)"
+          />
+        </div>
+
+        <button
+          [disabled]="!selectedReasons.length"
+          pButton
+          pRipple
+          label="Ban"
+          icon="pi pi-ban"
+          class="w-full mt-4"
+          (click)="onBanButtonClick()"
+        ></button>
+      </div>
+    </div>
+    <div
+      class="col-12 md:col-6 bg-no-repeat bg-right-bottom"
+      style="
+        background-image: url('assets/images/blocks/contact/contact-1.png');
+      "
+    >
+      <!-- <div class="text-900 text-2xl font-medium mb-6">Contact Us</div>
+      <div class="text-700 line-height-3 mb-6">
+        If you want to report more problem. Please contact:
+      </div>
+      <ul class="list-none p-0 m-0 mt-6 text-700">
+        <li class="flex align-items-center mb-3">
+          <i class="pi pi-phone mr-2"></i>
+          <span>0852102000</span>
+        </li>
+        <li class="flex align-items-center mb-3">
+          <i class="pi pi-facebook mr-2"></i>
+          <span>https://www.facebook.com/tuong.quan.22</span>
+        </li>
+        <li class="flex align-items-center">
+          <i class="pi pi-inbox mr-2"></i>
+          <span>tranquocbao2210@gmail.com</span>
+        </li>
+      </ul> -->
+    </div>
+  </div>
+</div>

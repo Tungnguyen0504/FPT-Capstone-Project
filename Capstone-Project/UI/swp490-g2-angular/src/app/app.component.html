@@ -1,0 +1,34 @@
+<p-toast></p-toast>
+<router-outlet></router-outlet>
+
+<p-scrollTop></p-scrollTop>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="fixed left-0 bottom-0 z-2 p-2">
+  <div class="mb-2" #contactOPTargetEl></div>
+  <p-button
+    (click)="toggleContactOP($event, contactOPTargetEl)"
+    icon="pi pi-phone"
+    [label]="adminContactsLabel"
+    styleClass="p-button-rounded p-button-help"
+  ></p-button>
+  <p-overlayPanel
+    #contactOP
+    (onShow)="adminContactsLabel = 'Admin Contacts'"
+    (onHide)="adminContactsLabel = ''"
+  >
+    <div class="grid" *ngFor="let admin of admins">
+      <div class="col">{{ admin.firstName }}</div>
+      <div class="col">
+        <a [href]="'mailto:' + admin.email">
+          {{ admin.email }}
+        </a>
+      </div>
+      <div class="col">
+        <a [href]="'tel:' + admin.phoneNumber">
+          {{ admin.phoneNumber }}
+        </a>
+      </div>
+    </div>
+  </p-overlayPanel>
+</div>

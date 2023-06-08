@@ -1,0 +1,126 @@
+<div class="surface-section px-6 py-5">
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Back"
+    icon="pi pi-arrow-left"
+    class="p-button-rounded p-button-info"
+    routerLink="../.."
+  ></button>
+</div>
+<div class="surface-section px-4 py-5 md:px-6 lg:px-8">
+  <div
+    class="flex align-items-start bg-gray-200 flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <div class="p-5">
+        <span class="text-900 font-medium text-3xl">
+          View Restaurant Information Details</span
+        >
+        <div class="flex align-items-center flex-wrap text-sm">
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500"
+              >View Information Details of () Restaurant</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="surface-section px-6 py-5">
+  <div
+    class="flex align-items-start flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <app-image-attachment
+        *ngIf="restaurant?.avatarFile?.filePath"
+        [uploadUrl]="uploadUrl"
+        [url]="restaurant?.avatarFile?.filePath"
+        (selectedImageHandler)="updateAvatar($event)"
+        method="PUT"
+        class="mr-5 mb-3 lg:mb-0"
+        [editable]="false"
+      ></app-image-attachment>
+      <div class="flex flex-column">
+        <span class="text-900 font-medium text-3xl">{{ restaurant?.restaurantName }}</span>
+        <span class="text-lg">{{ fullAddress }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="px-6 py-5" *ngIf="restaurant">
+  <div class="surface-card p-4 shadow-2 border-round">
+    <div class="font-medium text-3xl text-900 mb-3">Restaurant Information</div>
+    <ul class="list-none p-0 m-0 border-top-1 border-300">
+      <li class="flex align-items-center py-3 px-2 flex-wrap surface-100">
+        <div class="text-500 w-full md:w-2 font-medium">Restaurant Name</div>
+        <div class="text-900 w-full md:w-10">
+          {{ restaurant.restaurantName }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap">
+        <div class="text-500 w-full md:w-2 font-medium">Restaurant Owner</div>
+        <div class="text-900 w-full md:w-10 line-height-3">
+          {{ getOwners(restaurant) }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap surface-100">
+        <div class="text-500 w-full md:w-2 font-medium">Created Date</div>
+        <div class="text-900 w-full md:w-10">
+          {{ restaurant.createdAt | date : "dd/MM/yyyy" }}
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap">
+        <div class="text-500 w-full md:w-2 font-medium">Phone Number</div>
+        <div class="text-900 w-full md:w-10">{{ restaurant.phoneNumber }}</div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap surface-100">
+        <div class="text-500 w-full md:w-2 font-medium">Status</div>
+        <div class="text-900 w-full md:w-10">
+          <p-tag
+            *ngIf="restaurant.active"
+            styleClass="mr-2"
+            severity="success"
+            value="Activated"
+            [rounded]="true"
+          ></p-tag>
+          <p-tag
+            *ngIf="!restaurant.active"
+            styleClass="mr-2"
+            severity="danger"
+            value="Inactive"
+            [rounded]="true"
+          ></p-tag>
+        </div>
+      </li>
+      <li
+        class="flex align-items-center py-3 px-2 flex-wrap"
+        *ngIf="!restaurant.active"
+      >
+        <div class="text-500 w-full md:w-2 font-medium">Deactivate Reasons</div>
+        <div class="text-900 w-full md:w-10">
+          <ul>
+            <li *ngFor="let reason of getDeactivateReasons()">
+              {{ reason }}
+            </li>
+          </ul>
+        </div>
+      </li>
+      <li class="flex align-items-center py-3 px-2 flex-wrap">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Update information"
+          class="btn-action p-button-rounded mr-2"
+          [routerLink]="[
+            '/admin-pages/view-all-restaurant/update-restaurant-info-apply/' +
+              restaurant.id
+          ]"
+        ></button>
+      </li>
+    </ul>
+  </div>
+</div>

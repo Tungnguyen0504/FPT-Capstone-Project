@@ -1,0 +1,536 @@
+<div class="card">
+  <p-table
+    [value]="orders"
+    [lazy]="true"
+    (onLazyLoad)="onPage($event)"
+    dataKey="id"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [paginator]="true"
+    [rows]="10"
+    [totalRecords]="totalRecords"
+    [loading]="loading"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} orders"
+  >
+    <ng-template pTemplate="caption"> Orders </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Order #</th>
+        <th>Created At</th>
+        <ng-container *ngIf="!isBuyer">
+          <th>Buyer Name</th>
+          <th>Email</th>
+          <th>Phone number</th>
+        </ng-container>
+        <th>Total Order</th>
+        <th>Total Price</th>
+        <th>Order Status</th>
+        <th>Payment Status</th>
+        <th>Restaurant</th>
+        <th>Action</th>
+      </tr>
+      <tr>
+        <th></th>
+        <th></th>
+        <ng-container *ngIf="!isBuyer">
+          <th></th>
+          <th></th>
+          <th></th>
+        </ng-container>
+        <th></th>
+        <th></th>
+        <th>
+          <p-columnFilter
+            field="orderStatus"
+            matchMode="equals"
+            [showMenu]="false"
+          >
+            <ng-template
+              pTemplate="filter"
+              let-value
+              let-filter="filterCallback"
+            >
+              <p-dropdown
+                [ngModel]="value"
+                [options]="orderStatuses"
+                (onChange)="filter($event.value)"
+                placeholder="Any"
+                [showClear]="true"
+              >
+                <ng-template let-option pTemplate="item">
+                  <p-tag
+                    [value]="option"
+                    [severity]="getSeverity(option)"
+                  ></p-tag>
+                </ng-template>
+              </p-dropdown>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter
+            field="paymentStatus"
+            matchMode="equals"
+            [showMenu]="false"
+          >
+            <ng-template
+              pTemplate="filter"
+              let-value
+              let-filter="filterCallback"
+            >
+              <p-dropdown
+                [ngModel]="value"
+                [options]="paymentStatuses"
+                (onChange)="filter($event.value)"
+                placeholder="Any"
+                [showClear]="true"
+              >
+                <ng-template let-option pTemplate="item">
+                  <p-tag
+                    [value]="getPaymentStatusTagInfo(option).name"
+                    [severity]="getPaymentStatusTagInfo(option).severity"
+                  ></p-tag>
+                </ng-template>
+              </p-dropdown>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th></th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+      <tr>
+        <td>
+          {{ order.id }}
+        </td>
+        <td>
+          {{ order.createdAt * 1000 | date : "dd/MM/yyyy HH:mm" }}
+        </td>
+        <ng-container *ngIf="!isBuyer">
+          <td>
+            {{
+              order.orderCreator.lastName +
+                " " +
+                order.orderCreator.middleName +
+                " " +
+                order.orderCreator.firstName
+            }}
+          </td>
+          <td>{{ order.orderCreator.email }}</td>
+          <td>{{ order.phoneNumber || order.orderCreator.phoneNumber }}</td>
+        </ng-container>
+        <td>{{ order.orderProductDetails.length }}</td>
+        <td>{{ getOrderTotalPrice(order) | currency : "VND" }}</td>
+        <td class="text-center">
+          <p-tag
+            [value]="order.orderStatus"
+            [severity]="getSeverity(order.orderStatus)"
+          ></p-tag>
+        </td>
+        <td class="text-center">
+          <p-tag
+            *ngIf="getPaymentStatus(order)"
+            [value]="getPaymentStatus(order)!.name"
+            [severity]="getPaymentStatus(order)!.severity"
+          ></p-tag>
+        </td>
+        <td>{{ order?.restaurant?.restaurantName }}</td>
+        <td class="flex flex-wrap gap-2">
+          <p-button
+            (click)="showDialog(order.id)"
+            icon="pi pi-external-link"
+            label="View detail"
+          ></p-button>
+          <button
+            *ngIf="isBuyer"
+            pButton
+            pRipple
+            label="Order again"
+            icon="pi pi-shopping-cart"
+            (click)="addToCart(order)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <!-- <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        In total there are
+        {{ orderProductDetail ? orderProductDetail.length : 0 }} buyers order.
+      </div>
+    </ng-template> -->
+  </p-table>
+</div>
+
+<p-dialog
+  [header]="
+    selectedOrder?.restaurant?.restaurantName
+      ? 'Orders #' +
+        selectedOrder?.id +
+        ' [' +
+        selectedOrder?.restaurant?.restaurantName +
+        ']'
+      : 'Order detail'
+  "
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ 'min-width': '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="flex flex-wrap justify-content-center align-items-center gap-5">
+    <div class="w-full flex flex-column gap-2">
+      <div>
+        <strong> Buyer Name: </strong>
+        <span>
+          {{ getFullName(selectedOrder?.orderCreator) }}
+        </span>
+      </div>
+      <div>
+        <strong> Buyer Phone Number: </strong>
+        <span>
+          {{
+            selectedOrder?.phoneNumber ||
+              selectedOrder?.orderCreator?.phoneNumber
+          }}
+        </span>
+      </div>
+      <div>
+        <strong> Buyer Shipping Address: </strong>
+        <span>
+          {{ getFullAddress(selectedOrder?.destinationAddress) }}
+        </span>
+      </div>
+      <div>
+        <strong> Order Status: </strong>
+        <p-tag
+          [value]="selectedOrder?.orderStatus!"
+          [severity]="getSeverity(selectedOrder?.orderStatus!)"
+        ></p-tag>
+      </div>
+      <div
+        *ngIf="
+          selectedOrder?.orderTicket?.message &&
+          (selectedOrder?.orderStatus === 'REJECTED' ||
+            selectedOrder?.orderStatus === 'ABORTED' ||
+            selectedOrder?.orderStatus === 'CANCELLED')
+        "
+      >
+        <strong>Reason:</strong>
+        <span>
+          {{ selectedOrder?.orderTicket?.message }}
+        </span>
+      </div>
+    </div>
+
+    <ng-container *ngIf="showQr">
+      <img width="300px" [src]="bankImagePath" />
+      <div>
+        <div>
+          <strong>Account Number: </strong>
+          <span>
+            {{ selectedOrder?.restaurant?.bankDetail?.accountNumber }}
+          </span>
+        </div>
+        <div>
+          <strong>Account Name: </strong>
+          <span>
+            {{ selectedOrder?.restaurant?.bankDetail?.accountName }}
+          </span>
+        </div>
+        <div>
+          <strong>Total amount: </strong>
+          <span>
+            {{ getOrderTotalPrice(selectedOrder) | currency : "VND" }}
+          </span>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="flex flex-column gap-4 align-items-center">
+    <div class="flex gap-2 overflow-y-auto p-5" style="max-width: 50rem">
+      <div *ngFor="let orderDetail of selectedOrder?.orderProductDetails">
+        <p-card
+          [header]="orderDetail.product?.productName!"
+          [subheader]="(orderDetail.price | currency : 'VND') + ''"
+          [style]="{ width: '20rem' }"
+        >
+          <ng-template pTemplate="header">
+            <app-image-attachment
+              *ngIf="
+                orderDetail.product?.images &&
+                orderDetail.product?.images?.length
+              "
+              [url]="(orderDetail.product?.images)![0].filePath"
+              width="100%"
+              height="20rem"
+              [isRound]="false"
+            ></app-image-attachment>
+
+            <div
+              *ngIf="
+                !orderDetail.product?.images ||
+                !orderDetail.product?.images?.length
+              "
+              style="width: 100%; height: 20rem"
+              class="border-3 border-dashed border-round"
+            ></div>
+          </ng-template>
+          <p>Quantity: {{ orderDetail.quantity }}</p>
+          <p *ngIf="orderDetail.note">Note: {{ orderDetail.note }}</p>
+        </p-card>
+      </div>
+    </div>
+
+    <div
+      class="grid w-full"
+      *ngIf="isBuyer && selectedOrder?.orderStatus === 'PENDING'"
+    >
+      <div class="col">
+        <!-- <p-button
+          label="Cancel"
+          icon="pi pi-times"
+          styleClass="p-button-danger w-full"
+          (onClick)="cancel()"
+        ></p-button> -->
+        <p-button
+          label="Cancel"
+          icon="pi pi-times"
+          styleClass="p-button-danger w-full"
+          (click)="showCancelDialog()"
+        ></p-button>
+        <p-dialog
+          header="Cancel reason"
+          [(visible)]="visibleCancelDialog"
+          [modal]="true"
+          [style]="{ width: '50vw' }"
+          [draggable]="false"
+          [resizable]="false"
+        >
+          <div class="m-0">
+            <label for="reason" class="block text-900 font-medium my-4">
+              Why do you want to cancel this order?
+            </label>
+            <div class="flex justify-content-center">
+              <textarea
+                cols="100"
+                rows="5"
+                pInputTextarea
+                [(ngModel)]="selectedCancelReason"
+              ></textarea>
+            </div>
+          </div>
+          <button
+            pButton
+            pRipple
+            class="mt-3"
+            type="button"
+            label="Cancel"
+            icon="pi pi-times"
+            (click)="cancel()"
+          ></button>
+        </p-dialog>
+      </div>
+    </div>
+    <div class="grid w-full" *ngIf="!isBuyer">
+      <ng-container *ngIf="selectedOrder?.orderStatus === 'PENDING'">
+        <div class="col">
+          <p-button
+            label="Accept"
+            icon="pi pi-check"
+            styleClass="w-full"
+            (onClick)="accept()"
+          ></p-button>
+        </div>
+        <div class="col">
+          <!-- <p-button
+            label="Reject"
+            icon="pi pi-times"
+            styleClass="p-button-danger w-full"
+            (onClick)="reject()"
+          ></p-button> -->
+          <p-button
+            label="Reject"
+            icon="pi pi-times"
+            styleClass="p-button-danger w-full"
+            (click)="showRejectDialog()"
+          ></p-button>
+          <p-dialog
+            header="Reject reason"
+            [(visible)]="visibleRejectDialog"
+            [modal]="true"
+            [style]="{ width: '50vw' }"
+            [draggable]="false"
+            [resizable]="false"
+          >
+            <div class="m-0">
+              <label for="reason" class="block text-900 font-medium my-4">
+                Why do you want to reject this order?
+              </label>
+              <div class="flex justify-content-center">
+                <textarea
+                  cols="100"
+                  rows="5"
+                  pInputTextarea
+                  [(ngModel)]="selectedRejectReason"
+                ></textarea>
+              </div>
+            </div>
+            <button
+              pButton
+              pRipple
+              class="mt-3"
+              type="button"
+              label="Reject"
+              icon="pi pi-times"
+              (click)="reject()"
+            ></button>
+          </p-dialog>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="selectedOrder?.orderStatus === 'ACCEPTED'">
+        <div class="col-6">
+          <p-button
+            label="Start delivery"
+            icon="pi pi-check"
+            styleClass="w-full"
+            (onClick)="startDelivery()"
+          ></p-button>
+        </div>
+        <div class="col-6">
+          <p-button
+            label="Abort"
+            icon="pi pi-times"
+            styleClass="p-button-danger w-full"
+            (click)="showAbortDialog()"
+          ></p-button>
+        </div>
+      </ng-container>
+
+      <p-dialog
+        header="Abort reason"
+        [(visible)]="visibleAbortDialog"
+        [modal]="true"
+        [style]="{ width: '50vw' }"
+        [draggable]="false"
+        [resizable]="false"
+      >
+        <div class="m-0">
+          <label for="reason" class="block text-900 font-medium my-4">
+            Why do you want to abort this order?
+          </label>
+          <div class="flex justify-content-center">
+            <textarea
+              cols="100"
+              rows="5"
+              pInputTextarea
+              [(ngModel)]="selectedAbortReason"
+            ></textarea>
+          </div>
+        </div>
+        <button
+          pButton
+          pRipple
+          class="mt-3"
+          type="button"
+          label="Abort"
+          icon="pi pi-times"
+          (click)="abort()"
+        ></button>
+      </p-dialog>
+
+      <ng-container *ngIf="selectedOrder?.orderStatus === 'DELIVERING'">
+        <div class="col">
+          <p-button
+            [disabled]="selectedOrder?.paymentStatus !== 'PAID' ? true : false"
+            label="Buyer received item"
+            icon="pi pi-check"
+            styleClass="w-full"
+            (onClick)="complete()"
+          ></p-button>
+        </div>
+        <div class="col">
+          <p-button
+            label="Abort"
+            icon="pi pi-times"
+            styleClass="p-button-danger w-full"
+            (click)="showAbortDialog()"
+          ></p-button>
+        </div>
+      </ng-container>
+
+      <ng-container
+        *ngIf="
+          selectedOrder?.orderStatus === 'ACCEPTED' ||
+          selectedOrder?.orderStatus === 'DELIVERING' ||
+          selectedOrder?.orderStatus === 'COMPLETED'
+        "
+      >
+        <div class="col-12">
+          <p-divider></p-divider>
+        </div>
+        <div class="col-6 flex justify-content-center align-items-center">
+          <strong
+            [ngClass]="
+              selectedOrder?.paymentStatus === 'PAID'
+                ? 'text-success'
+                : 'text-danger'
+            "
+          >
+            {{
+              "Buyer has " +
+                (selectedOrder?.paymentStatus === "PAID"
+                  ? "paid"
+                  : "not paid") +
+                " the order!"
+            }}
+          </strong>
+        </div>
+        <div class="col-6" *ngIf="selectedOrder?.paymentStatus === 'NOT_PAID'">
+          <p-button
+            label="Receive Payment"
+            icon="pi pi-check"
+            styleClass="w-full"
+            (onClick)="receivePayment()"
+          ></p-button>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="selectedOrder?.orderStatus === 'ABORTED'">
+        <div class="col-12">
+          <p-divider></p-divider>
+        </div>
+        <div class="col-6 flex justify-content-center align-items-center">
+          <strong
+            [ngClass]="
+              selectedOrder?.paymentStatus === 'REFUNDED'
+                ? 'text-success'
+                : 'text-danger'
+            "
+          >
+            {{
+              "Buyer has " +
+                (selectedOrder?.paymentStatus === "REFUNDED"
+                  ? "received"
+                  : "not received") +
+                " the refund!"
+            }}
+          </strong>
+        </div>
+        <div
+          class="col-6"
+          *ngIf="selectedOrder?.paymentStatus === 'NOT_REFUNDED'"
+        >
+          <p-button
+            label="Refund"
+            icon="pi pi-check"
+            styleClass="w-full"
+            (onClick)="refund()"
+          ></p-button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</p-dialog>

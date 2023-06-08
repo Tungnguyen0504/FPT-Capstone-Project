@@ -1,0 +1,169 @@
+<div class="surface-section p-2 lg:p-5 flex flex-column gap-5">
+  <div>
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Back"
+      icon="pi pi-arrow-left"
+      class="p-button-rounded p-button-info"
+      routerLink=".."
+    ></button>
+  </div>
+  <div
+    class="flex align-items-start bg-gray-200 flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <div class="p-5">
+        <span class="text-900 font-medium text-3xl">
+          Create Restaurant Information
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <form #form="ngForm" class="grid" (ngSubmit)="submit()" #myForm="ngForm">
+    <div class="col-12 lg:col-6">
+      <label for="res.name" class="block text-900 font-medium mb-3 required">
+        Restaurant Name
+      </label>
+      <div class="grid">
+        <div class="col-12">
+          <div class="p-inputgroup">
+            <input
+              [(ngModel)]="restaurant.restaurantName"
+              name="restaurantName"
+              type="text"
+              pInputText
+              placeholder="Restaurant Name"
+              maxlength="255"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="flex align-items-center gap-1"
+        *ngIf="
+        form && form.controls['restaurantName'] && form.controls['restaurantName'].dirty && form.controls['restaurantName'].invalid
+        "
+      >
+        <i class="pi pi-times-circle text-danger"></i>
+        <small class="text-danger"> Enter a valid restaurant name! </small>
+      </div>
+    </div>
+    <div class="col-12 lg:col-6">
+      <label class="block text-900 font-medium mb-3 required">
+        Restaurant Category
+      </label>
+      <div class="grid">
+        <div class="p-fluid col-12">
+          <p-autoComplete
+            [(ngModel)]="selectedCategories"
+            [suggestions]="filteredCategories"
+            (completeMethod)="filterRestaurantCategory($event)"
+            [dropdown]="true"
+            [multiple]="true"
+            field="restaurantCategoryName"
+            name="restaurantCategoryName"
+            [required]="true"
+            placeholder="Restaurant category"
+            [forceSelection]="true"
+          ></p-autoComplete>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <app-address-fields></app-address-fields>
+    </div>
+
+    <div class="col-12">
+      <label for="phoneNumber" class="block text-900 font-medium mb-3 required"
+        >Phone Number</label
+      >
+      <div class="grid">
+        <div class="col-12">
+          <div class="p-inputgroup">
+            <input
+              id="phoneNumber"
+              type="text"
+              pInputText
+              class="w-full mb-1"
+              [(ngModel)]="restaurant.phoneNumber"
+              name="phoneNumber"
+              placeholder="Phone Number"
+              required
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex align-items-center gap-1"
+        *ngIf="
+          form.controls['phoneNumber']?.dirty &&
+          form.controls['phoneNumber']?.errors
+        "
+      >
+        <i class="pi pi-times-circle text-danger"></i>
+        <small class="text-danger"> Enter a valid phone number! </small>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <label for="descr" class="block text-900 font-medium mb-3 required">
+        Description
+      </label>
+      <div class="grid">
+        <div class="col-12">
+          <div class="p-inputgroup">
+            <textarea
+              rows="5"
+              cols="30"
+              pInputTextarea
+              placeholder="Description"
+              [(ngModel)]="restaurant.description"
+              name="description"
+              required
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex align-items-center gap-1"
+        *ngIf="
+        form && form.controls['description'] && form.controls['description'].dirty && form.controls['description'].invalid
+        "
+      >
+        <i class="pi pi-times-circle text-danger"></i>
+        <small class="text-danger"> Enter a valid description! </small>
+      </div>
+    </div>
+
+    <!-- <label for="descr" class="block text-900 font-medium mb-3">Avatar</label>
+  <div class="grid">
+    <div class="col-12">
+      <app-image-attachment
+        [uploadUrl]="uploadUrl"
+        [url]="restaurant.avatarFile?.filePath"
+        (selectedImageHandler)="updateAvatar($event)"
+        method="PUT"
+        class="mr-5 mb-3 lg:mb-0"
+        [editable]="editable"
+      ></app-image-attachment>
+    </div>
+  </div> -->
+
+    <div class="col-12">
+      <button
+        pButton
+        pRipple
+        label="Save Changes"
+        icon="pi pi-check"
+        class="w-full"
+        [disabled]="submitButtonDisabled"
+      ></button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,140 @@
+<style>
+  .p-carousel .p-carousel-content .p-carousel-prev,
+  .p-carousel .p-carousel-content .p-carousel-next {
+    background: #e9ecef !important;
+  }
+</style>
+
+<div class="surface-section">
+  <div
+    class="surface-section h-45rem bg-no-repeat bg-cover bg-center"
+    style="
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+        url(./assets/images/slider-01-blur.jpg);
+    "
+  >
+    <div class="p-2 lg:p-6 text-center">
+      <span class="block text-5xl text-white mb-4">Welcome to HRMS</span>
+      <span class="block text-4xl font-medium text-white mb-4"
+        >The applications support Buyer and Seller feel comfortable during
+        ordering and delivering</span
+      >
+      <p-carousel
+        [value]="products"
+        [numVisible]="3"
+        [circular]="true"
+        [responsiveOptions]="responsiveOptions"
+        [autoplayInterval]="5000"
+      >
+        <ng-template let-product pTemplate="item">
+          <div class="p-2 lg:p-5">
+            <div
+              class="relative mb-3 cursor-pointer"
+              [pTooltip]="product.restaurant?.restaurantName"
+              tooltipPosition="top"
+              (click)="onProductImageClick(product)"
+            >
+              <div class="absolute top-0 right-0 z-1 pr-2 pt-2">
+                <p-tag severity="danger"> Popular Choice </p-tag>
+              </div>
+              <app-image-attachment
+                *ngIf="product.images && product.images.length"
+                [url]="product.images[0].filePath"
+                width="100%"
+                height="20rem"
+                [isRound]="false"
+              ></app-image-attachment>
+
+              <div
+                *ngIf="!product.images || !product.images.length"
+                style="width: 100%; height: 20rem"
+                class="border-3 border-dashed border-round"
+              ></div>
+            </div>
+            <span class="text-white font-medium text-xl">
+              {{ product.productName }}
+            </span>
+            <div class="mb-4">
+              <span class="font-bold text-white">
+                {{ product.price | currency : "VND" }}
+              </span>
+            </div>
+            <div class="flex flex-column gap-2" *ngIf="user">
+              <button
+                pButton
+                pRipple
+                label="Add to Cart"
+                icon="pi pi-shopping-cart"
+                class="w-full"
+                [disabled]="product.productStatus === 'OUT_OF_STOCK'"
+                (click)="addToCart(product)"
+              ></button>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+      <ng-container *ngIf="!userExisted()">
+        <button
+          pButton
+          type="button"
+          label="Sign In Now!"
+          icon="pi pi-users"
+          class="p-button-info p-button-raised p-button-rounded mr-2"
+          (click)="navToLogin()"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Register Now!"
+          icon="pi pi-id-card"
+          class="p-button-secondary p-button-raised p-button-rounded"
+          (click)="navToRegister()"
+        ></button>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<div class="surface-section px-4 py-8 md:px-6 lg:px-8">
+  <div class="justify-content-between flex-wrap">
+    <div class="flex align-items-center mb-4 md:mb-0">
+      <div class="text-900 font-bold text-3xl">All Restaurant Categories</div>
+    </div>
+    <p class="text-600 text-xl">
+      Many delicious meals and beverages are waiting for you, with a lot of
+      promotion are very interesting
+    </p>
+    <div class="surface-section px-4 md:px-6 lg:px-8">
+      <div class="flex flex-column">
+        <div
+          class="flex flex-column lg:flex-row align-items-center justify-content-center lg:justify-content-between"
+        >
+          <div class="text-900 font-medium text-4xl mb-4"></div>
+          <a
+            tabindex="0"
+            class="cursor-pointer text-primary flex align-items-center"
+            routerLink="/restaurants"
+            >See All Categories<i class="pi pi-arrow-right ml-3"></i
+          ></a>
+        </div>
+        <div class="flex flex-wrap gap-3 pt-3">
+          <div
+            class="flex flex-column h-25rem flex-grow-1 cursor-pointer"
+            *ngFor="let category of restaurantCategories"
+            (click)="goToRestaurantCategory(category)"
+          >
+            <div
+              class="flex h-full bg-no-repeat bg-cover bg-center border-round shadow-2 lg:mx-0"
+              [style]="getRestaurantCategoryImage(category)"
+            >
+              <p
+                class="font-medium text-2xl text-white text-center w-full align-self-end"
+              >
+                {{ category.restaurantCategoryName }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

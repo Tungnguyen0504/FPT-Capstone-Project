@@ -1,0 +1,175 @@
+<div class="surface-section flex flex-column gap-5 p-2 lg:p-5">
+  <div>
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Back"
+      icon="pi pi-arrow-left"
+      class="p-button-rounded p-button-info"
+      routerLink=".."
+    ></button>
+  </div>
+  <div
+    class="flex align-items-start bg-gray-200 flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <div class="p-5">
+        <span class="text-900 font-medium text-3xl">User Management</span>
+        <div class="flex align-items-center flex-wrap text-sm">
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500">TOTAL USER</span>
+            <div class="text-700 mt-2">{{ userList.length }}</div>
+          </div>
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500">ACTIVE</span>
+            <div class="text-700 mt-2">
+              {{ getTotalUsersByStatus("ACTIVE") }}
+            </div>
+          </div>
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500">INACTIVE</span>
+            <div class="text-700 mt-2">
+              {{ getTotalUsersByStatus("INACTIVE") }}
+            </div>
+          </div>
+          <div class="mr-5 mt-3">
+            <span class="font-medium text-500">BANNED</span>
+            <div class="text-700 mt-2">
+              {{ getTotalUsersByStatus("BANNED") }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p-table
+    #dt
+    [value]="userList"
+    dataKey="id"
+    [rowHover]="true"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5, 10, 25, 50]"
+    [paginator]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [filterDelay]="0"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <div class="flex justify-content-between align-items-center">#</div>
+        </th>
+        <th pSortableColumn="email">
+          <div class="flex justify-content-between align-items-center">
+            Email
+            <p-sortIcon field="email"></p-sortIcon>
+          </div>
+        </th>
+        <th pSortableColumn="firstName">
+          <div class="flex justify-content-between align-items-center">
+            Full Name
+            <p-sortIcon field="firstName"></p-sortIcon>
+          </div>
+        </th>
+        <th>
+          <div class="flex justify-content-between align-items-center">
+            Phone Number
+          </div>
+        </th>
+        <th>
+          <div class="flex justify-content-between align-items-center">
+            Roles
+          </div>
+        </th>
+        <th>
+          <div class="flex justify-content-between align-items-center">
+            Status
+          </div>
+        </th>
+        <th>
+          <div class="flex justify-content-between align-items-center">
+            Action
+          </div>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
+      <tr class="p-selectable-row">
+        <td>
+          <span class="p-column-title">#</span>
+          {{ rowIndex + 1 }}
+        </td>
+        <td>
+          <span class="p-column-title">Email</span>
+          {{ user.email }}
+        </td>
+        <td>
+          <span class="p-column-title">Full Name</span>
+          {{ user.firstName }} {{ user.middleName }}
+          {{ user.lastName }}
+        </td>
+        <td>
+          <span class="p-column-title">Phone Number</span>
+          {{ user.phoneNumber }}
+        </td>
+        <td>
+          <span class="p-column-title">Roles</span>
+          {{ user.roles }}
+        </td>
+        <td>
+          <span class="p-column-title">Status</span>
+          <app-user-status [user]="user"></app-user-status>
+        </td>
+        <td class="flex gap-1">
+          <button
+            pButton
+            type="button"
+            class="p-button-rounded p-button-secondary"
+            icon="pi pi-list"
+            pTooltip="View Details"
+            tooltipPosition="top"
+            [routerLink]="'view-user-details/' + user.id"
+          ></button>
+          <button
+            *ngIf="user.userStatus !== 'BANNED'"
+            pButton
+            type="button"
+            class="p-button-rounded p-button-danger"
+            icon="pi pi-lock"
+            pTooltip="Ban"
+            tooltipPosition="top"
+            [routerLink]="'ban-user/' + user.id"
+            [disabled]="user.admin"
+          ></button>
+          <button
+            *ngIf="user.userStatus === 'BANNED'"
+            pButton
+            type="button"
+            class="p-button-rounded p-button-info"
+            icon="pi pi-unlock"
+            pTooltip="Unban"
+            tooltipPosition="top"
+            [disabled]="user.admin"
+            (click)="unban(user)"
+          ></button>
+          <button
+            pButton
+            type="button"
+            class="p-button-rounded p-button-success"
+            icon="pi pi-pencil"
+            pTooltip="Update Role"
+            tooltipPosition="top"
+            [routerLink]="'change-role/' + user.id"
+            [disabled]="!canChangeRole(user)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="9">No Data</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

@@ -1,0 +1,32 @@
+<div class="surface-section flex flex-column gap-5 p-2 lg:p-5">
+  <div>
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Back"
+      icon="pi pi-arrow-left"
+      class="p-button-rounded p-button-info"
+      routerLink=".."
+    ></button>
+  </div>
+  <div
+    class="flex align-items-start bg-gray-200 flex-column lg:flex-row lg:justify-content-between"
+  >
+    <div class="flex align-items-start flex-column md:flex-row">
+      <div class="p-5">
+        <span class="text-900 font-medium text-3xl">
+          Select Your Owner Restaurant</span
+        >
+        <div class="flex align-items-center flex-wrap text-sm"></div>
+      </div>
+    </div>
+  </div>
+  <app-restaurants
+    *ngIf="user"
+    [hasCurrentUser]="false"
+    [hasPagination]="true"
+    [owner]="user"
+    [includeInactive]="true"
+  ></app-restaurants>
+</div>
